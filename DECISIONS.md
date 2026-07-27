@@ -177,3 +177,21 @@ drives that class's pooled recall to 0 with an exception outcome, while
 intact classes stay caught (same discipline as the toolkit's planted-drift
 validation, D-022/D-023 there: a detector that never fires would pass every
 happy-path test).
+
+## D-022 · 2026-07-27 · Sampling conventions pinned; the bridge is one honest sentence
+Implements D-005. Planning: allowance c = expected deviations rounded up;
+smallest n with P(X<=c | tolerable) <= risk; the hypergeometric form marks
+K = ceil(tolerable x N) population items. Evaluation: exact one-sided upper
+deviation limit (smallest rate leaving <= risk probability of a result this
+clean), bisected on the binomial CDF with a fixed iteration count so output
+is deterministic; finite populations bound whole deviant items (smallest
+integer K). Three outcomes mirror D-015: UDL <= tolerable passes; observed
+rate >= tolerable is an exception; in between, the sample size cannot
+answer and says so. The classic anchors (59 at 5/5/0, 22 at 10/10/0, 93
+with allowance 1 at 5%/5%/1%) are recomputed in tests from the formulas —
+agreement with published tables is a test of the math, never a source.
+BRIDGE_NOTE states the only legitimate connection to the rule battery: a
+complete examination stratifies; sampling math describes what a random
+sample *of a stratum* supports; a full-population screen is never recast
+as a statistical sample after the fact (toolkit D-031's lesson applied to
+sampling).
