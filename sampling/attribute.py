@@ -258,7 +258,8 @@ def evaluate_attribute_sample(
         outcome = OUTCOME_SUPPORTS
         reason = (
             f"UDL {limit.udl:.4f} <= tolerable {tolerable_rate:.4f}: the "
-            f"sample supports reliance at {1 - risk:.0%} one-sided confidence"
+            f"sample (n={n}) supports reliance at {1 - risk:.0%} one-sided "
+            f"confidence"
         )
     elif limit.sample_rate >= tolerable_rate:
         outcome = OUTCOME_EXCEPTION

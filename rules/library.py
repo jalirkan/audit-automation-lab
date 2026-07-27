@@ -621,24 +621,36 @@ class DuplicateRule(Rule):
 
 class NearDuplicateRule(Rule):
     rule_id = "R-011"
-    title = "Near-duplicate entries"
+    title = "Near-duplicate entries (shifted resubmissions)"
     targets = ("near_duplicate",)
     references = ("AU-C 240",)
     population_description = "All journal entries."
     criterion_description = (
         "Two entries by the same preparer touch the same accounts within the "
-        "window, with amounts within the tolerance but not identical, or "
-        "identical amounts with differing descriptions; description "
-        "similarity is reported with each pair."
+        "window with amounts within tolerance but not equal, and either (a) "
+        "their descriptions carry the same reference tokens (digit runs such "
+        "as invoice or check numbers) — the resubmitted-document pattern — "
+        "or (b) neither carries conflicting references and the wording is "
+        "nearly identical without being identical. Differing reference "
+        "tokens veto the pair: different documents legitimately produce "
+        "similar wording."
     )
     limitations = (
-        "Similarity screening is lexical (difflib ratio) — a semantic "
-        "rewording with different accounts is invisible to it. Flags are "
-        "candidates for inspection, not established resubmissions.",
+        "This is a lexical screen keyed on reference tokens and wording "
+        "(difflib) — a resubmission that renumbers the document and rewords "
+        "the description is invisible to it, as is any semantic rewording "
+        "with different accounts. Flags are candidates for inspection, not "
+        "established resubmissions.",
+        "Identical descriptions with different amounts and no references "
+        "(e.g. repeated payments on account) are deliberately not flagged: "
+        "at ledger scale that pattern is routine business, and a screen "
+        "that flags it drowns its own signal. Pair screens are "
+        "density-dependent; the report card measures the false-positive "
+        "cost at the size under test.",
     )
 
-    def __init__(self, window_days: int = 10, amount_tolerance: float = 0.02,
-                 min_description_similarity: float = 0.5):
+    def __init__(self, window_days: int = 7, amount_tolerance: float = 0.01,
+                 min_description_similarity: float = 0.9):
         self.window_days = window_days
         self.amount_tolerance = amount_tolerance
         self.min_description_similarity = min_description_similarity
@@ -650,6 +662,23 @@ class NearDuplicateRule(Rule):
             "min_description_similarity": self.min_description_similarity,
         }
 
+    @staticmethod
+    def _reference_tokens(entry) -> tuple:
+        """Digit runs in the description, excluding the entry's own account
+        numbers: 'Reclassification 6300 to 6350' names accounts, not
+        documents, and treating those as shared references would flag every
+        same-pair reclass at ledger scale."""
+        import re
+
+        own_accounts = set(entry.account_ids)
+        return tuple(
+            sorted(
+                t
+                for t in re.findall(r"\d{3,}", entry.description)
+                if t not in own_accounts
+            )
+        )
+
     def evaluate(self, ledger):
         groups = {}
         for e in ledger.entries:
@@ -660,40 +689,42 @@ class NearDuplicateRule(Rule):
             if len(members) < 2:
                 continue
             members.sort(key=lambda e: (e.posting_date, e.entry_id))
+            tokens = {m.entry_id: self._reference_tokens(m) for m in members}
             for i, a in enumerate(members):
                 for b in members[i + 1 :]:
                     gap = (b.posting_date - a.posting_date).days
                     if gap > self.window_days:
                         break
                     lo, hi = sorted((a.amount_cents, b.amount_cents))
-                    if lo == 0:
+                    if lo == 0 or lo == hi:
+                        continue  # equal amounts are R-010's exact-match territory
+                    if (hi - lo) / lo > self.amount_tolerance:
                         continue
-                    same_amount = a.amount_cents == b.amount_cents
-                    within_tol = (hi - lo) / lo <= self.amount_tolerance
-                    same_desc = a.description == b.description
-                    if same_amount and same_desc:
-                        continue  # exact duplicates belong to R-010
-                    if not within_tol:
-                        continue
-                    similarity = SequenceMatcher(
-                        None, a.description, b.description
-                    ).ratio()
-                    if similarity < self.min_description_similarity:
-                        continue
+                    ta, tb = tokens[a.entry_id], tokens[b.entry_id]
+                    if ta and tb and ta == tb:
+                        basis = f"same reference tokens {', '.join(ta)}"
+                    elif ta and tb and ta != tb:
+                        continue  # different documents; similar wording is expected
+                    else:
+                        if a.description == b.description:
+                            continue  # routine repeated activity, no references
+                        similarity = SequenceMatcher(
+                            None, a.description, b.description
+                        ).ratio()
+                        if similarity < self.min_description_similarity:
+                            continue
+                        basis = f"wording similarity {similarity:.2f} with no conflicting references"
                     for this, other in ((a, b), (b, a)):
-                        rationale = (
-                            f"Near-duplicate of {other.entry_id}: same accounts "
-                            f"and preparer ({this.preparer_id}), amounts "
-                            f"{cents_to_str(a.amount_cents)} vs "
-                            f"{cents_to_str(b.amount_cents)}, {gap} day(s) "
-                            f"apart, description similarity {similarity:.2f}"
-                        )
                         if this.entry_id not in flagged:
                             flagged[this.entry_id] = Flag(
                                 self.rule_id,
                                 this.entry_id,
-                                rationale,
-                                {"partner": other.entry_id,
-                                 "similarity": round(similarity, 4)},
+                                f"Possible shifted resubmission of "
+                                f"{other.entry_id}: same accounts and preparer "
+                                f"({this.preparer_id}), amounts "
+                                f"{cents_to_str(a.amount_cents)} vs "
+                                f"{cents_to_str(b.amount_cents)}, {gap} day(s) "
+                                f"apart; {basis}",
+                                {"partner": other.entry_id, "basis": basis},
                             )
         return sort_flags(flagged.values())

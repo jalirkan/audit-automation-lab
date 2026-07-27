@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Workpaper WP-SAMPLING — Attribute sampling</title>
+<style>
+body { font-family: Georgia, 'Times New Roman', serif; margin: 2.5rem auto;
+       max-width: 60rem; color: #1a1a1a; line-height: 1.45; }
+h1 { font-size: 1.5rem; border-bottom: 2px solid #1a1a1a; padding-bottom: .3rem; }
+h2 { font-size: 1.15rem; margin-top: 1.6rem; }
+h3 { font-size: 1.0rem; }
+table { border-collapse: collapse; margin: .6rem 0 1rem; min-width: 40rem; }
+th, td { border: 1px solid #999; padding: .25rem .5rem; text-align: left;
+         font-size: .85rem; vertical-align: top; }
+th { background: #efefef; }
+.kv td:first-child { font-weight: bold; width: 18rem; }
+.outcome-pass { color: #1b5e20; }
+.outcome-exception { color: #b71c1c; }
+.outcome-inconclusive { color: #795548; }
+</style>
+</head>
+<body>
+<h1>Workpaper WP-SAMPLING — Attribute sampling</h1>
+<h2>Bridge from full-population analytics</h2>
+<p>The rule battery is a complete examination that stratifies the population into flagged and unflagged entries; it is not a sample and supports no projection beyond itself. Where the audit response to a flagged stratum is manual review of a random sample drawn from that stratum, the attribute-sampling mathematics here quantifies what that sample supports about the stratum at a stated risk of overreliance — and nothing more.</p>
+<h2>Sample size (attribute sampling)</h2>
+<table class="kv"><tr><td>Tolerable deviation rate</td><td>0.0500</td></tr><tr><td>Expected deviation rate</td><td>0.0000</td></tr><tr><td>Risk of overreliance</td><td>0.0500</td></tr><tr><td>Population</td><td>large (binomial)</td></tr><tr><td>Required sample size</td><td>n=59</td></tr><tr><td>Planned deviation allowance</td><td>0</td></tr><tr><td>Achieved risk at n</td><td>0.0485</td></tr><tr><td>Method</td><td>binomial, computed from the defining inequality (no table lookup)</td></tr></table>
+<h2>Sample evaluation</h2>
+<table class="kv"><tr><td>Sample</td><td>0 deviations in n=59</td></tr><tr><td>Observed rate</td><td>0.0000</td></tr><tr><td>Upper deviation limit</td><td>at 95% one-sided confidence, the deviation rate does not exceed 0.0495 (sample: 0/59, n=59)</td></tr><tr><td>Tolerable rate</td><td>0.0500</td></tr><tr><td>Outcome</td><td><span class="outcome-pass">pass</span></td></tr><tr><td>Basis</td><td>UDL 0.0495 &lt;= tolerable 0.0500: the sample (n=59) supports reliance at 95% one-sided confidence</td></tr></table>
+<p>Flags in this pack are leads for auditor follow-up. A flag directs attention; it does not, by itself, establish error or irregularity, and no automated procedure here reaches a conclusion about intent. Disposition requires auditor judgment and further procedures.</p>
+</body>
+</html>

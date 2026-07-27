@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Detection report card</title>
+<style>
+body { font-family: Georgia, 'Times New Roman', serif; margin: 2.5rem auto;
+       max-width: 60rem; color: #1a1a1a; line-height: 1.45; }
+h1 { font-size: 1.5rem; border-bottom: 2px solid #1a1a1a; padding-bottom: .3rem; }
+h2 { font-size: 1.15rem; margin-top: 1.6rem; }
+h3 { font-size: 1.0rem; }
+table { border-collapse: collapse; margin: .6rem 0 1rem; min-width: 40rem; }
+th, td { border: 1px solid #999; padding: .25rem .5rem; text-align: left;
+         font-size: .85rem; vertical-align: top; }
+th { background: #efefef; }
+.kv td:first-child { font-weight: bold; width: 18rem; }
+.outcome-pass { color: #1b5e20; }
+.outcome-exception { color: #b71c1c; }
+.outcome-inconclusive { color: #795548; }
+</style>
+</head>
+<body>
+<h1>Detection report card</h1>
+<p>The lab grades itself before it grades a ledger: every rule ran against synthetic ledgers whose anomalies are known by construction (the injector manifest is the ground truth), and the rates below are measured against that truth. A detection capability without such a report card is a claim without evidence.</p>
+<h2>Definitions</h2>
+<table class="kv"><tr><td>detected</td><td>an instance counts as detected when any rule flags any of its entry ids</td></tr><tr><td>fp_rate</td><td>flagged clean entries / clean entries (also shown per 10,000)</td></tr><tr><td>note</td><td>targets are engagement parameters, not standards; outcomes are decided interval-vs-target, so small planted counts yield inconclusive, not a pass</td></tr><tr><td>precision</td><td>flagged entries that are planted / all flagged entries</td></tr></table>
+<h2>Targets</h2>
+<table class="kv"><tr><td>Recall floor (per class)</td><td>0.9</td></tr><tr><td>Precision floor</td><td>0.5</td></tr><tr><td>False-positive ceiling</td><td>0.02</td></tr><tr><td>Minimum pooled sample for a pass</td><td>20</td></tr><tr><td>Caveat</td><td>targets are engagement parameters chosen for this lab, not professional standards</td></tr></table>
+<h2>Recall by planted class (pooled across seeds)</h2>
+<table><caption>Seeds: 8101, 8102, 8103, 8104, 8105</caption><tr><th>Class</th><th>Planted</th><th>Detected</th><th>Recall (Wilson)</th><th>Outcome</th><th>Per-seed range</th></tr><tr><td>dormant_reactivation</td><td>40</td><td>40</td><td>1.0000 (95% wilson 0.9124-1.0000, n=40)</td><td><span class="outcome-pass">pass</span></td><td>1.00-1.00</td></tr><tr><td>duplicate_pair</td><td>40</td><td>40</td><td>1.0000 (95% wilson 0.9124-1.0000, n=40)</td><td><span class="outcome-pass">pass</span></td><td>1.00-1.00</td></tr><tr><td>late_round_dollar</td><td>40</td><td>40</td><td>1.0000 (95% wilson 0.9124-1.0000, n=40)</td><td><span class="outcome-pass">pass</span></td><td>1.00-1.00</td></tr><tr><td>missing_description</td><td>40</td><td>40</td><td>1.0000 (95% wilson 0.9124-1.0000, n=40)</td><td><span class="outcome-pass">pass</span></td><td>1.00-1.00</td></tr><tr><td>near_duplicate</td><td>40</td><td>39</td><td>0.9750 (95% wilson 0.8712-0.9956, n=40)</td><td><span class="outcome-inconclusive">inconclusive</span></td><td>0.88-1.00</td></tr><tr><td>post_close_entry</td><td>40</td><td>40</td><td>1.0000 (95% wilson 0.9124-1.0000, n=40)</td><td><span class="outcome-pass">pass</span></td><td>1.00-1.00</td></tr><tr><td>self_approval</td><td>40</td><td>40</td><td>1.0000 (95% wilson 0.9124-1.0000, n=40)</td><td><span class="outcome-pass">pass</span></td><td>1.00-1.00</td></tr><tr><td>threshold_shaving</td><td>40</td><td>40</td><td>1.0000 (95% wilson 0.9124-1.0000, n=40)</td><td><span class="outcome-pass">pass</span></td><td>1.00-1.00</td></tr><tr><td>unbalanced_entry</td><td>40</td><td>40</td><td>1.0000 (95% wilson 0.9124-1.0000, n=40)</td><td><span class="outcome-pass">pass</span></td><td>1.00-1.00</td></tr><tr><td>unusual_pairing</td><td>15</td><td>15</td><td>1.0000 (95% wilson 0.7961-1.0000, n=15)</td><td><span class="outcome-inconclusive">inconclusive</span></td><td>1.00-1.00</td></tr><tr><td>weekend_manual</td><td>40</td><td>40</td><td>1.0000 (95% wilson 0.9124-1.0000, n=40)</td><td><span class="outcome-pass">pass</span></td><td>1.00-1.00</td></tr></table>
+<h2>Battery precision and false-positive load</h2>
+<table class="kv"><tr><td>Precision (entry level)</td><td>0.2049 (95% wilson 0.1904-0.2203, n=2796)</td></tr><tr><td>Precision outcome</td><td>exception — entire interval below threshold</td></tr><tr><td>False-positive rate</td><td>0.0222 (95% wilson 0.0214-0.0232, n=99920)</td></tr><tr><td>False positives per 10,000 clean entries</td><td>222.5 (interval 213.5-231.8 per 10k, n=99920)</td></tr><tr><td>FP outcome</td><td>exception — entire interval above threshold</td></tr></table>
+<h2>Per-rule precision (pooled)</h2>
+<table><caption>Clean hits are the cost side of each rule: legitimate entries swept in as leads</caption><tr><th>Rule</th><th>Flags</th><th>Planted hits</th><th>Clean hits</th><th>Precision (Wilson)</th></tr><tr><td>R-001</td><td>40</td><td>40</td><td>0</td><td>1.0000 (95% wilson 0.9124-1.0000, n=40)</td></tr><tr><td>R-002</td><td>1682</td><td>82</td><td>1600</td><td>0.0488 (95% wilson 0.0394-0.0601, n=1682)</td></tr><tr><td>R-003</td><td>70</td><td>40</td><td>30</td><td>0.5714 (95% wilson 0.4548-0.6806, n=70)</td></tr><tr><td>R-004</td><td>100</td><td>40</td><td>60</td><td>0.4000 (95% wilson 0.3094-0.4980, n=100)</td></tr><tr><td>R-005</td><td>646</td><td>120</td><td>526</td><td>0.1858 (95% wilson 0.1577-0.2176, n=646)</td></tr><tr><td>R-006</td><td>40</td><td>40</td><td>0</td><td>1.0000 (95% wilson 0.9124-1.0000, n=40)</td></tr><tr><td>R-007</td><td>40</td><td>40</td><td>0</td><td>1.0000 (95% wilson 0.9124-1.0000, n=40)</td></tr><tr><td>R-008</td><td>16</td><td>16</td><td>0</td><td>1.0000 (95% wilson 0.8064-1.0000, n=16)</td></tr><tr><td>R-009</td><td>40</td><td>40</td><td>0</td><td>1.0000 (95% wilson 0.9124-1.0000, n=40)</td></tr><tr><td>R-010</td><td>98</td><td>94</td><td>4</td><td>0.9592 (95% wilson 0.8997-0.9840, n=98)</td></tr><tr><td>R-011</td><td>92</td><td>78</td><td>14</td><td>0.8478 (95% wilson 0.7606-0.9071, n=92)</td></tr></table>
+<h2>Per-run summary</h2>
+<table><tr><th>Seed</th><th>Entries</th><th>Planted instances</th><th>Flagged</th><th>Precision</th><th>FP load</th></tr><tr><td>8101</td><td>20099</td><td>83</td><td>561</td><td>0.2050 (95% wilson 0.1736-0.2403, n=561)</td><td>223.2/10k (n=19984)</td></tr><tr><td>8102</td><td>20099</td><td>83</td><td>517</td><td>0.2224 (95% wilson 0.1887-0.2603, n=517)</td><td>201.2/10k (n=19984)</td></tr><tr><td>8103</td><td>20099</td><td>83</td><td>586</td><td>0.1928 (95% wilson 0.1629-0.2267, n=586)</td><td>236.7/10k (n=19984)</td></tr><tr><td>8104</td><td>20099</td><td>83</td><td>573</td><td>0.2007 (95% wilson 0.1699-0.2354, n=573)</td><td>229.2/10k (n=19984)</td></tr><tr><td>8105</td><td>20099</td><td>83</td><td>559</td><td>0.2057 (95% wilson 0.1743-0.2412, n=559)</td><td>222.2/10k (n=19984)</td></tr></table>
+<h2>Missed instances</h2>
+<table><tr><th>Seed</th><th>Class</th><th>Anomaly</th></tr><tr><td>8103</td><td>near_duplicate</td><td>AN-036</td></tr></table>
+<h2>Reading this card</h2>
+<p>Outcomes are decided by comparing the Wilson interval to the target, never the point estimate: a class caught 6 times out of 6 planted renders inconclusive against a 0.9 floor, because six instances cannot demonstrate it. Inconclusive is reported, never rounded up to pass.</p>
+<p>Precision is deliberately not 1.0: the clean population contains benign structure (recurring round-dollar rent, system batches posting on weekend month-ends, a December close cluster) precisely so the false-positive cost of each rule is measured rather than assumed away.</p>
+</body>
+</html>

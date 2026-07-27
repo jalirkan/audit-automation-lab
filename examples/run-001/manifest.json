@@ -1,0 +1,381 @@
+{
+  "anomalies": [
+    {
+      "anomaly_class": "late_round_dollar",
+      "anomaly_id": "AN-001",
+      "entry_ids": [
+        "JE-098976"
+      ],
+      "note": "Manual entry of exactly 15000 dollars posted on the final business day of the fiscal year by P-02"
+    },
+    {
+      "anomaly_class": "late_round_dollar",
+      "anomaly_id": "AN-002",
+      "entry_ids": [
+        "JE-099748"
+      ],
+      "note": "Manual entry of exactly 40000 dollars posted on the final business day of the fiscal year by P-01"
+    },
+    {
+      "anomaly_class": "late_round_dollar",
+      "anomaly_id": "AN-003",
+      "entry_ids": [
+        "JE-099220"
+      ],
+      "note": "Manual entry of exactly 15000 dollars posted on the final business day of the fiscal year by P-04"
+    },
+    {
+      "anomaly_class": "late_round_dollar",
+      "anomaly_id": "AN-004",
+      "entry_ids": [
+        "JE-099082"
+      ],
+      "note": "Manual entry of exactly 15000 dollars posted on the final business day of the fiscal year by P-05"
+    },
+    {
+      "anomaly_class": "post_close_entry",
+      "anomaly_id": "AN-005",
+      "entry_ids": [
+        "JE-100048"
+      ],
+      "note": "Revenue entry posted 2026-01-05, after fiscal year end, effective back into the closed period"
+    },
+    {
+      "anomaly_class": "post_close_entry",
+      "anomaly_id": "AN-006",
+      "entry_ids": [
+        "JE-100050"
+      ],
+      "note": "Revenue entry posted 2026-01-05, after fiscal year end, effective back into the closed period"
+    },
+    {
+      "anomaly_class": "post_close_entry",
+      "anomaly_id": "AN-007",
+      "entry_ids": [
+        "JE-100051"
+      ],
+      "note": "Revenue entry posted 2026-01-08, after fiscal year end, effective back into the closed period"
+    },
+    {
+      "anomaly_class": "post_close_entry",
+      "anomaly_id": "AN-008",
+      "entry_ids": [
+        "JE-100049"
+      ],
+      "note": "Revenue entry posted 2026-01-05, after fiscal year end, effective back into the closed period"
+    },
+    {
+      "anomaly_class": "self_approval",
+      "anomaly_id": "AN-009",
+      "entry_ids": [
+        "JE-002074"
+      ],
+      "note": "Entry above the approval threshold prepared and approved by the same user P-05"
+    },
+    {
+      "anomaly_class": "self_approval",
+      "anomaly_id": "AN-010",
+      "entry_ids": [
+        "JE-021594"
+      ],
+      "note": "Entry above the approval threshold prepared and approved by the same user P-03"
+    },
+    {
+      "anomaly_class": "self_approval",
+      "anomaly_id": "AN-011",
+      "entry_ids": [
+        "JE-009093"
+      ],
+      "note": "Entry above the approval threshold prepared and approved by the same user P-03"
+    },
+    {
+      "anomaly_class": "self_approval",
+      "anomaly_id": "AN-012",
+      "entry_ids": [
+        "JE-051090"
+      ],
+      "note": "Entry above the approval threshold prepared and approved by the same user P-06"
+    },
+    {
+      "anomaly_class": "duplicate_pair",
+      "anomaly_id": "AN-013",
+      "entry_ids": [
+        "JE-038199",
+        "JE-040205"
+      ],
+      "note": "Exact duplicate (same vendor invoice reference, amount, accounts, preparer) posted two business days after the original"
+    },
+    {
+      "anomaly_class": "duplicate_pair",
+      "anomaly_id": "AN-014",
+      "entry_ids": [
+        "JE-059281",
+        "JE-059922"
+      ],
+      "note": "Exact duplicate (same vendor invoice reference, amount, accounts, preparer) posted two business days after the original"
+    },
+    {
+      "anomaly_class": "duplicate_pair",
+      "anomaly_id": "AN-015",
+      "entry_ids": [
+        "JE-022922",
+        "JE-024351"
+      ],
+      "note": "Exact duplicate (same vendor invoice reference, amount, accounts, preparer) posted two business days after the original"
+    },
+    {
+      "anomaly_class": "duplicate_pair",
+      "anomaly_id": "AN-016",
+      "entry_ids": [
+        "JE-065790",
+        "JE-066494"
+      ],
+      "note": "Exact duplicate (same vendor invoice reference, amount, accounts, preparer) posted two business days after the original"
+    },
+    {
+      "anomaly_class": "near_duplicate",
+      "anomaly_id": "AN-017",
+      "entry_ids": [
+        "JE-042391",
+        "JE-043391"
+      ],
+      "note": "Near-duplicate of the original vendor invoice: same accounts and preparer, amount shifted about 0.7 percent, three business days later"
+    },
+    {
+      "anomaly_class": "near_duplicate",
+      "anomaly_id": "AN-018",
+      "entry_ids": [
+        "JE-085977",
+        "JE-087318"
+      ],
+      "note": "Near-duplicate of the original vendor invoice: same accounts and preparer, amount shifted about 0.7 percent, three business days later"
+    },
+    {
+      "anomaly_class": "near_duplicate",
+      "anomaly_id": "AN-019",
+      "entry_ids": [
+        "JE-002541",
+        "JE-003530"
+      ],
+      "note": "Near-duplicate of the original vendor invoice: same accounts and preparer, amount shifted about 0.7 percent, three business days later"
+    },
+    {
+      "anomaly_class": "near_duplicate",
+      "anomaly_id": "AN-020",
+      "entry_ids": [
+        "JE-019349",
+        "JE-020427"
+      ],
+      "note": "Near-duplicate of the original vendor invoice: same accounts and preparer, amount shifted about 0.7 percent, three business days later"
+    },
+    {
+      "anomaly_class": "threshold_shaving",
+      "anomaly_id": "AN-021",
+      "entry_ids": [
+        "JE-036733",
+        "JE-037106",
+        "JE-037576"
+      ],
+      "note": "Series of three Cascade Power & Light invoices by P-06 within a few business days, each just below the approval threshold \u2014 none individually required approval"
+    },
+    {
+      "anomaly_class": "threshold_shaving",
+      "anomaly_id": "AN-022",
+      "entry_ids": [
+        "JE-000607",
+        "JE-001476",
+        "JE-002271"
+      ],
+      "note": "Series of three Millbrook Janitorial invoices by P-05 within a few business days, each just below the approval threshold \u2014 none individually required approval"
+    },
+    {
+      "anomaly_class": "threshold_shaving",
+      "anomaly_id": "AN-023",
+      "entry_ids": [
+        "JE-069910",
+        "JE-070103",
+        "JE-070726"
+      ],
+      "note": "Series of three Silver Birch Software invoices by P-02 within a few business days, each just below the approval threshold \u2014 none individually required approval"
+    },
+    {
+      "anomaly_class": "threshold_shaving",
+      "anomaly_id": "AN-024",
+      "entry_ids": [
+        "JE-073262",
+        "JE-074406",
+        "JE-075168"
+      ],
+      "note": "Series of three Millbrook Janitorial invoices by P-05 within a few business days, each just below the approval threshold \u2014 none individually required approval"
+    },
+    {
+      "anomaly_class": "dormant_reactivation",
+      "anomaly_id": "AN-025",
+      "entry_ids": [
+        "JE-084339"
+      ],
+      "note": "Posting to dormant account 4500 (Revenue \u2014 discontinued product line), inactive since 2023-03-31"
+    },
+    {
+      "anomaly_class": "dormant_reactivation",
+      "anomaly_id": "AN-026",
+      "entry_ids": [
+        "JE-011780"
+      ],
+      "note": "Posting to dormant account 4500 (Revenue \u2014 discontinued product line), inactive since 2023-03-31"
+    },
+    {
+      "anomaly_class": "dormant_reactivation",
+      "anomaly_id": "AN-027",
+      "entry_ids": [
+        "JE-009584"
+      ],
+      "note": "Posting to dormant account 2150 (Legacy marketing accrual), inactive since 2021-12-31"
+    },
+    {
+      "anomaly_class": "dormant_reactivation",
+      "anomaly_id": "AN-028",
+      "entry_ids": [
+        "JE-015861"
+      ],
+      "note": "Posting to dormant account 1550 (Legacy equipment \u2014 retired line), inactive since 2022-06-30"
+    },
+    {
+      "anomaly_class": "unbalanced_entry",
+      "anomaly_id": "AN-029",
+      "entry_ids": [
+        "JE-017540"
+      ],
+      "note": "Debits exceed credits by 455 dollars \u2014 entry does not balance"
+    },
+    {
+      "anomaly_class": "unbalanced_entry",
+      "anomaly_id": "AN-030",
+      "entry_ids": [
+        "JE-067348"
+      ],
+      "note": "Debits exceed credits by 313 dollars \u2014 entry does not balance"
+    },
+    {
+      "anomaly_class": "unbalanced_entry",
+      "anomaly_id": "AN-031",
+      "entry_ids": [
+        "JE-013220"
+      ],
+      "note": "Debits exceed credits by 291 dollars \u2014 entry does not balance"
+    },
+    {
+      "anomaly_class": "unbalanced_entry",
+      "anomaly_id": "AN-032",
+      "entry_ids": [
+        "JE-062275"
+      ],
+      "note": "Debits exceed credits by 58 dollars \u2014 entry does not balance"
+    },
+    {
+      "anomaly_class": "missing_description",
+      "anomaly_id": "AN-033",
+      "entry_ids": [
+        "JE-037473"
+      ],
+      "note": "Manual entry recorded with no description"
+    },
+    {
+      "anomaly_class": "missing_description",
+      "anomaly_id": "AN-034",
+      "entry_ids": [
+        "JE-028190"
+      ],
+      "note": "Manual entry recorded with no description"
+    },
+    {
+      "anomaly_class": "missing_description",
+      "anomaly_id": "AN-035",
+      "entry_ids": [
+        "JE-082302"
+      ],
+      "note": "Manual entry recorded with no description"
+    },
+    {
+      "anomaly_class": "missing_description",
+      "anomaly_id": "AN-036",
+      "entry_ids": [
+        "JE-054819"
+      ],
+      "note": "Manual entry recorded with no description"
+    },
+    {
+      "anomaly_class": "weekend_manual",
+      "anomaly_id": "AN-037",
+      "entry_ids": [
+        "JE-017323"
+      ],
+      "note": "Manual entry posted on a Saturday by human user P-04"
+    },
+    {
+      "anomaly_class": "weekend_manual",
+      "anomaly_id": "AN-038",
+      "entry_ids": [
+        "JE-043914"
+      ],
+      "note": "Manual entry posted on a Sunday by human user P-06"
+    },
+    {
+      "anomaly_class": "weekend_manual",
+      "anomaly_id": "AN-039",
+      "entry_ids": [
+        "JE-051236"
+      ],
+      "note": "Manual entry posted on a Sunday by human user P-06"
+    },
+    {
+      "anomaly_class": "weekend_manual",
+      "anomaly_id": "AN-040",
+      "entry_ids": [
+        "JE-065490"
+      ],
+      "note": "Manual entry posted on a Saturday by human user P-02"
+    },
+    {
+      "anomaly_class": "unusual_pairing",
+      "anomaly_id": "AN-041",
+      "entry_ids": [
+        "JE-016743"
+      ],
+      "note": "Debit 6700 / credit 4000 \u2014 an account pairing that appears nowhere else in the population"
+    },
+    {
+      "anomaly_class": "unusual_pairing",
+      "anomaly_id": "AN-042",
+      "entry_ids": [
+        "JE-000806"
+      ],
+      "note": "Debit 6600 / credit 4100 \u2014 an account pairing that appears nowhere else in the population"
+    },
+    {
+      "anomaly_class": "unusual_pairing",
+      "anomaly_id": "AN-043",
+      "entry_ids": [
+        "JE-009629"
+      ],
+      "note": "Debit 1300 / credit 4900 \u2014 an account pairing that appears nowhere else in the population"
+    }
+  ],
+  "anomaly_seed": 20260401,
+  "generator_seed": 20260401,
+  "n_anomalies": 43,
+  "n_planted_entries": 59,
+  "plan": {
+    "dormant_reactivation": 4,
+    "duplicate_pair": 4,
+    "late_round_dollar": 4,
+    "missing_description": 4,
+    "near_duplicate": 4,
+    "post_close_entry": 4,
+    "self_approval": 4,
+    "threshold_shaving": 4,
+    "unbalanced_entry": 4,
+    "unusual_pairing": 3,
+    "weekend_manual": 4
+  }
+}

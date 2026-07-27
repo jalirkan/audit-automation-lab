@@ -1,0 +1,5551 @@
+{
+  "config_echo": {
+    "approval_threshold_cents": 1000000,
+    "december_weight": 1.25,
+    "end": "2025-12-31",
+    "include_payroll": true,
+    "include_recurring": true,
+    "include_system_batch": true,
+    "month_end_weight": 4.0,
+    "n_approvers": 3,
+    "n_entries": 20000,
+    "n_preparers": 6,
+    "seed": 0,
+    "start": "2025-01-01"
+  },
+  "definitions": {
+    "detected": "an instance counts as detected when any rule flags any of its entry ids",
+    "fp_rate": "flagged clean entries / clean entries (also shown per 10,000)",
+    "note": "targets are engagement parameters, not standards; outcomes are decided interval-vs-target, so small planted counts yield inconclusive, not a pass",
+    "precision": "flagged entries that are planted / all flagged entries"
+  },
+  "fp_decision": {
+    "measurement": {
+      "confidence": 0.95,
+      "direction": "lower_is_better",
+      "interval": [
+        0.021352,
+        0.023181
+      ],
+      "kind": "proportion",
+      "label": "pooled false-positive rate (clean entries)",
+      "method": "wilson",
+      "n": 99920,
+      "numerator": 2223,
+      "rendered": "0.0222 (95% wilson 0.0214-0.0232, n=99920)",
+      "value": 0.022248
+    },
+    "min_sample": 20,
+    "outcome": "exception",
+    "reason": "entire interval above threshold",
+    "threshold": 0.02
+  },
+  "plan": {
+    "dormant_reactivation": 8,
+    "duplicate_pair": 8,
+    "late_round_dollar": 8,
+    "missing_description": 8,
+    "near_duplicate": 8,
+    "post_close_entry": 8,
+    "self_approval": 8,
+    "threshold_shaving": 8,
+    "unbalanced_entry": 8,
+    "unusual_pairing": 3,
+    "weekend_manual": 8
+  },
+  "pooled_classes": [
+    {
+      "anomaly_class": "dormant_reactivation",
+      "decision": {
+        "measurement": {
+          "confidence": 0.95,
+          "direction": "higher_is_better",
+          "interval": [
+            0.912378,
+            1.0
+          ],
+          "kind": "proportion",
+          "label": "pooled recall[dormant_reactivation]",
+          "method": "wilson",
+          "n": 40,
+          "numerator": 40,
+          "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+          "value": 1.0
+        },
+        "min_sample": 20,
+        "outcome": "pass",
+        "reason": "entire interval at or above threshold",
+        "threshold": 0.9
+      },
+      "n_detected": 40,
+      "n_planted": 40,
+      "per_seed": {
+        "8101": "8/8",
+        "8102": "8/8",
+        "8103": "8/8",
+        "8104": "8/8",
+        "8105": "8/8"
+      },
+      "recall": {
+        "confidence": 0.95,
+        "direction": "higher_is_better",
+        "interval": [
+          0.912378,
+          1.0
+        ],
+        "kind": "proportion",
+        "label": "pooled recall[dormant_reactivation]",
+        "method": "wilson",
+        "n": 40,
+        "numerator": 40,
+        "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+        "value": 1.0
+      },
+      "recall_max": 1.0,
+      "recall_min": 1.0
+    },
+    {
+      "anomaly_class": "duplicate_pair",
+      "decision": {
+        "measurement": {
+          "confidence": 0.95,
+          "direction": "higher_is_better",
+          "interval": [
+            0.912378,
+            1.0
+          ],
+          "kind": "proportion",
+          "label": "pooled recall[duplicate_pair]",
+          "method": "wilson",
+          "n": 40,
+          "numerator": 40,
+          "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+          "value": 1.0
+        },
+        "min_sample": 20,
+        "outcome": "pass",
+        "reason": "entire interval at or above threshold",
+        "threshold": 0.9
+      },
+      "n_detected": 40,
+      "n_planted": 40,
+      "per_seed": {
+        "8101": "8/8",
+        "8102": "8/8",
+        "8103": "8/8",
+        "8104": "8/8",
+        "8105": "8/8"
+      },
+      "recall": {
+        "confidence": 0.95,
+        "direction": "higher_is_better",
+        "interval": [
+          0.912378,
+          1.0
+        ],
+        "kind": "proportion",
+        "label": "pooled recall[duplicate_pair]",
+        "method": "wilson",
+        "n": 40,
+        "numerator": 40,
+        "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+        "value": 1.0
+      },
+      "recall_max": 1.0,
+      "recall_min": 1.0
+    },
+    {
+      "anomaly_class": "late_round_dollar",
+      "decision": {
+        "measurement": {
+          "confidence": 0.95,
+          "direction": "higher_is_better",
+          "interval": [
+            0.912378,
+            1.0
+          ],
+          "kind": "proportion",
+          "label": "pooled recall[late_round_dollar]",
+          "method": "wilson",
+          "n": 40,
+          "numerator": 40,
+          "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+          "value": 1.0
+        },
+        "min_sample": 20,
+        "outcome": "pass",
+        "reason": "entire interval at or above threshold",
+        "threshold": 0.9
+      },
+      "n_detected": 40,
+      "n_planted": 40,
+      "per_seed": {
+        "8101": "8/8",
+        "8102": "8/8",
+        "8103": "8/8",
+        "8104": "8/8",
+        "8105": "8/8"
+      },
+      "recall": {
+        "confidence": 0.95,
+        "direction": "higher_is_better",
+        "interval": [
+          0.912378,
+          1.0
+        ],
+        "kind": "proportion",
+        "label": "pooled recall[late_round_dollar]",
+        "method": "wilson",
+        "n": 40,
+        "numerator": 40,
+        "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+        "value": 1.0
+      },
+      "recall_max": 1.0,
+      "recall_min": 1.0
+    },
+    {
+      "anomaly_class": "missing_description",
+      "decision": {
+        "measurement": {
+          "confidence": 0.95,
+          "direction": "higher_is_better",
+          "interval": [
+            0.912378,
+            1.0
+          ],
+          "kind": "proportion",
+          "label": "pooled recall[missing_description]",
+          "method": "wilson",
+          "n": 40,
+          "numerator": 40,
+          "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+          "value": 1.0
+        },
+        "min_sample": 20,
+        "outcome": "pass",
+        "reason": "entire interval at or above threshold",
+        "threshold": 0.9
+      },
+      "n_detected": 40,
+      "n_planted": 40,
+      "per_seed": {
+        "8101": "8/8",
+        "8102": "8/8",
+        "8103": "8/8",
+        "8104": "8/8",
+        "8105": "8/8"
+      },
+      "recall": {
+        "confidence": 0.95,
+        "direction": "higher_is_better",
+        "interval": [
+          0.912378,
+          1.0
+        ],
+        "kind": "proportion",
+        "label": "pooled recall[missing_description]",
+        "method": "wilson",
+        "n": 40,
+        "numerator": 40,
+        "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+        "value": 1.0
+      },
+      "recall_max": 1.0,
+      "recall_min": 1.0
+    },
+    {
+      "anomaly_class": "near_duplicate",
+      "decision": {
+        "measurement": {
+          "confidence": 0.95,
+          "direction": "higher_is_better",
+          "interval": [
+            0.871186,
+            0.995573
+          ],
+          "kind": "proportion",
+          "label": "pooled recall[near_duplicate]",
+          "method": "wilson",
+          "n": 40,
+          "numerator": 39,
+          "rendered": "0.9750 (95% wilson 0.8712-0.9956, n=40)",
+          "value": 0.975
+        },
+        "min_sample": 20,
+        "outcome": "inconclusive",
+        "reason": "interval straddles the threshold",
+        "threshold": 0.9
+      },
+      "n_detected": 39,
+      "n_planted": 40,
+      "per_seed": {
+        "8101": "8/8",
+        "8102": "8/8",
+        "8103": "7/8",
+        "8104": "8/8",
+        "8105": "8/8"
+      },
+      "recall": {
+        "confidence": 0.95,
+        "direction": "higher_is_better",
+        "interval": [
+          0.871186,
+          0.995573
+        ],
+        "kind": "proportion",
+        "label": "pooled recall[near_duplicate]",
+        "method": "wilson",
+        "n": 40,
+        "numerator": 39,
+        "rendered": "0.9750 (95% wilson 0.8712-0.9956, n=40)",
+        "value": 0.975
+      },
+      "recall_max": 1.0,
+      "recall_min": 0.875
+    },
+    {
+      "anomaly_class": "post_close_entry",
+      "decision": {
+        "measurement": {
+          "confidence": 0.95,
+          "direction": "higher_is_better",
+          "interval": [
+            0.912378,
+            1.0
+          ],
+          "kind": "proportion",
+          "label": "pooled recall[post_close_entry]",
+          "method": "wilson",
+          "n": 40,
+          "numerator": 40,
+          "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+          "value": 1.0
+        },
+        "min_sample": 20,
+        "outcome": "pass",
+        "reason": "entire interval at or above threshold",
+        "threshold": 0.9
+      },
+      "n_detected": 40,
+      "n_planted": 40,
+      "per_seed": {
+        "8101": "8/8",
+        "8102": "8/8",
+        "8103": "8/8",
+        "8104": "8/8",
+        "8105": "8/8"
+      },
+      "recall": {
+        "confidence": 0.95,
+        "direction": "higher_is_better",
+        "interval": [
+          0.912378,
+          1.0
+        ],
+        "kind": "proportion",
+        "label": "pooled recall[post_close_entry]",
+        "method": "wilson",
+        "n": 40,
+        "numerator": 40,
+        "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+        "value": 1.0
+      },
+      "recall_max": 1.0,
+      "recall_min": 1.0
+    },
+    {
+      "anomaly_class": "self_approval",
+      "decision": {
+        "measurement": {
+          "confidence": 0.95,
+          "direction": "higher_is_better",
+          "interval": [
+            0.912378,
+            1.0
+          ],
+          "kind": "proportion",
+          "label": "pooled recall[self_approval]",
+          "method": "wilson",
+          "n": 40,
+          "numerator": 40,
+          "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+          "value": 1.0
+        },
+        "min_sample": 20,
+        "outcome": "pass",
+        "reason": "entire interval at or above threshold",
+        "threshold": 0.9
+      },
+      "n_detected": 40,
+      "n_planted": 40,
+      "per_seed": {
+        "8101": "8/8",
+        "8102": "8/8",
+        "8103": "8/8",
+        "8104": "8/8",
+        "8105": "8/8"
+      },
+      "recall": {
+        "confidence": 0.95,
+        "direction": "higher_is_better",
+        "interval": [
+          0.912378,
+          1.0
+        ],
+        "kind": "proportion",
+        "label": "pooled recall[self_approval]",
+        "method": "wilson",
+        "n": 40,
+        "numerator": 40,
+        "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+        "value": 1.0
+      },
+      "recall_max": 1.0,
+      "recall_min": 1.0
+    },
+    {
+      "anomaly_class": "threshold_shaving",
+      "decision": {
+        "measurement": {
+          "confidence": 0.95,
+          "direction": "higher_is_better",
+          "interval": [
+            0.912378,
+            1.0
+          ],
+          "kind": "proportion",
+          "label": "pooled recall[threshold_shaving]",
+          "method": "wilson",
+          "n": 40,
+          "numerator": 40,
+          "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+          "value": 1.0
+        },
+        "min_sample": 20,
+        "outcome": "pass",
+        "reason": "entire interval at or above threshold",
+        "threshold": 0.9
+      },
+      "n_detected": 40,
+      "n_planted": 40,
+      "per_seed": {
+        "8101": "8/8",
+        "8102": "8/8",
+        "8103": "8/8",
+        "8104": "8/8",
+        "8105": "8/8"
+      },
+      "recall": {
+        "confidence": 0.95,
+        "direction": "higher_is_better",
+        "interval": [
+          0.912378,
+          1.0
+        ],
+        "kind": "proportion",
+        "label": "pooled recall[threshold_shaving]",
+        "method": "wilson",
+        "n": 40,
+        "numerator": 40,
+        "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+        "value": 1.0
+      },
+      "recall_max": 1.0,
+      "recall_min": 1.0
+    },
+    {
+      "anomaly_class": "unbalanced_entry",
+      "decision": {
+        "measurement": {
+          "confidence": 0.95,
+          "direction": "higher_is_better",
+          "interval": [
+            0.912378,
+            1.0
+          ],
+          "kind": "proportion",
+          "label": "pooled recall[unbalanced_entry]",
+          "method": "wilson",
+          "n": 40,
+          "numerator": 40,
+          "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+          "value": 1.0
+        },
+        "min_sample": 20,
+        "outcome": "pass",
+        "reason": "entire interval at or above threshold",
+        "threshold": 0.9
+      },
+      "n_detected": 40,
+      "n_planted": 40,
+      "per_seed": {
+        "8101": "8/8",
+        "8102": "8/8",
+        "8103": "8/8",
+        "8104": "8/8",
+        "8105": "8/8"
+      },
+      "recall": {
+        "confidence": 0.95,
+        "direction": "higher_is_better",
+        "interval": [
+          0.912378,
+          1.0
+        ],
+        "kind": "proportion",
+        "label": "pooled recall[unbalanced_entry]",
+        "method": "wilson",
+        "n": 40,
+        "numerator": 40,
+        "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+        "value": 1.0
+      },
+      "recall_max": 1.0,
+      "recall_min": 1.0
+    },
+    {
+      "anomaly_class": "unusual_pairing",
+      "decision": {
+        "measurement": {
+          "confidence": 0.95,
+          "direction": "higher_is_better",
+          "interval": [
+            0.796117,
+            1.0
+          ],
+          "kind": "proportion",
+          "label": "pooled recall[unusual_pairing]",
+          "method": "wilson",
+          "n": 15,
+          "numerator": 15,
+          "rendered": "1.0000 (95% wilson 0.7961-1.0000, n=15)",
+          "value": 1.0
+        },
+        "min_sample": 20,
+        "outcome": "inconclusive",
+        "reason": "interval straddles the threshold",
+        "threshold": 0.9
+      },
+      "n_detected": 15,
+      "n_planted": 15,
+      "per_seed": {
+        "8101": "3/3",
+        "8102": "3/3",
+        "8103": "3/3",
+        "8104": "3/3",
+        "8105": "3/3"
+      },
+      "recall": {
+        "confidence": 0.95,
+        "direction": "higher_is_better",
+        "interval": [
+          0.796117,
+          1.0
+        ],
+        "kind": "proportion",
+        "label": "pooled recall[unusual_pairing]",
+        "method": "wilson",
+        "n": 15,
+        "numerator": 15,
+        "rendered": "1.0000 (95% wilson 0.7961-1.0000, n=15)",
+        "value": 1.0
+      },
+      "recall_max": 1.0,
+      "recall_min": 1.0
+    },
+    {
+      "anomaly_class": "weekend_manual",
+      "decision": {
+        "measurement": {
+          "confidence": 0.95,
+          "direction": "higher_is_better",
+          "interval": [
+            0.912378,
+            1.0
+          ],
+          "kind": "proportion",
+          "label": "pooled recall[weekend_manual]",
+          "method": "wilson",
+          "n": 40,
+          "numerator": 40,
+          "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+          "value": 1.0
+        },
+        "min_sample": 20,
+        "outcome": "pass",
+        "reason": "entire interval at or above threshold",
+        "threshold": 0.9
+      },
+      "n_detected": 40,
+      "n_planted": 40,
+      "per_seed": {
+        "8101": "8/8",
+        "8102": "8/8",
+        "8103": "8/8",
+        "8104": "8/8",
+        "8105": "8/8"
+      },
+      "recall": {
+        "confidence": 0.95,
+        "direction": "higher_is_better",
+        "interval": [
+          0.912378,
+          1.0
+        ],
+        "kind": "proportion",
+        "label": "pooled recall[weekend_manual]",
+        "method": "wilson",
+        "n": 40,
+        "numerator": 40,
+        "rendered": "1.0000 (95% wilson 0.9124-1.0000, n=40)",
+        "value": 1.0
+      },
+      "recall_max": 1.0,
+      "recall_min": 1.0
+    }
+  ],
+  "pooled_fp_per_10k": 222.48,
+  "pooled_fp_rate": {
+    "confidence": 0.95,
+    "direction": "lower_is_better",
+    "interval": [
+      0.021352,
+      0.023181
+    ],
+    "kind": "proportion",
+    "label": "pooled false-positive rate (clean entries)",
+    "method": "wilson",
+    "n": 99920,
+    "numerator": 2223,
+    "rendered": "0.0222 (95% wilson 0.0214-0.0232, n=99920)",
+    "value": 0.022248
+  },
+  "pooled_precision": {
+    "confidence": 0.95,
+    "direction": "higher_is_better",
+    "interval": [
+      0.190383,
+      0.220298
+    ],
+    "kind": "proportion",
+    "label": "pooled precision (battery, entry level)",
+    "method": "wilson",
+    "n": 2796,
+    "numerator": 573,
+    "rendered": "0.2049 (95% wilson 0.1904-0.2203, n=2796)",
+    "value": 0.204936
+  },
+  "precision_decision": {
+    "measurement": {
+      "confidence": 0.95,
+      "direction": "higher_is_better",
+      "interval": [
+        0.190383,
+        0.220298
+      ],
+      "kind": "proportion",
+      "label": "pooled precision (battery, entry level)",
+      "method": "wilson",
+      "n": 2796,
+      "numerator": 573,
+      "rendered": "0.2049 (95% wilson 0.1904-0.2203, n=2796)",
+      "value": 0.204936
+    },
+    "min_sample": 20,
+    "outcome": "exception",
+    "reason": "entire interval below threshold",
+    "threshold": 0.5
+  },
+  "runs": [
+    {
+      "anomaly_seed": 8101,
+      "benford_notes": {
+        "first_digit": {
+          "applicable": true,
+          "conclusion": "conforming",
+          "mad": 0.002508
+        },
+        "second_digit": {
+          "applicable": true,
+          "conclusion": "conforming",
+          "mad": 0.001667
+        }
+      },
+      "class_grades": [
+        {
+          "anomaly_class": "dormant_reactivation",
+          "caught_by": {
+            "AN-049": [
+              "R-007"
+            ],
+            "AN-050": [
+              "R-007"
+            ],
+            "AN-051": [
+              "R-007"
+            ],
+            "AN-052": [
+              "R-007"
+            ],
+            "AN-053": [
+              "R-007"
+            ],
+            "AN-054": [
+              "R-007"
+            ],
+            "AN-055": [
+              "R-007"
+            ],
+            "AN-056": [
+              "R-007"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[dormant_reactivation] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[dormant_reactivation] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "duplicate_pair",
+          "caught_by": {
+            "AN-025": [
+              "R-010"
+            ],
+            "AN-026": [
+              "R-010"
+            ],
+            "AN-027": [
+              "R-010"
+            ],
+            "AN-028": [
+              "R-010"
+            ],
+            "AN-029": [
+              "R-010"
+            ],
+            "AN-030": [
+              "R-010"
+            ],
+            "AN-031": [
+              "R-010"
+            ],
+            "AN-032": [
+              "R-010"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[duplicate_pair] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[duplicate_pair] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "late_round_dollar",
+          "caught_by": {
+            "AN-001": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-002": [
+              "R-002",
+              "R-004",
+              "R-010"
+            ],
+            "AN-003": [
+              "R-002",
+              "R-004",
+              "R-010"
+            ],
+            "AN-004": [
+              "R-002",
+              "R-004",
+              "R-010"
+            ],
+            "AN-005": [
+              "R-002",
+              "R-004",
+              "R-010"
+            ],
+            "AN-006": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-007": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-008": [
+              "R-002",
+              "R-004"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[late_round_dollar] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[late_round_dollar] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "missing_description",
+          "caught_by": {
+            "AN-065": [
+              "R-006"
+            ],
+            "AN-066": [
+              "R-006"
+            ],
+            "AN-067": [
+              "R-006"
+            ],
+            "AN-068": [
+              "R-006"
+            ],
+            "AN-069": [
+              "R-006"
+            ],
+            "AN-070": [
+              "R-006"
+            ],
+            "AN-071": [
+              "R-006"
+            ],
+            "AN-072": [
+              "R-006"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[missing_description] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[missing_description] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "near_duplicate",
+          "caught_by": {
+            "AN-033": [
+              "R-011"
+            ],
+            "AN-034": [
+              "R-011"
+            ],
+            "AN-035": [
+              "R-011"
+            ],
+            "AN-036": [
+              "R-011"
+            ],
+            "AN-037": [
+              "R-011"
+            ],
+            "AN-038": [
+              "R-011"
+            ],
+            "AN-039": [
+              "R-011"
+            ],
+            "AN-040": [
+              "R-011"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[near_duplicate] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[near_duplicate] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "post_close_entry",
+          "caught_by": {
+            "AN-009": [
+              "R-002"
+            ],
+            "AN-010": [
+              "R-002"
+            ],
+            "AN-011": [
+              "R-002"
+            ],
+            "AN-012": [
+              "R-002"
+            ],
+            "AN-013": [
+              "R-002"
+            ],
+            "AN-014": [
+              "R-002"
+            ],
+            "AN-015": [
+              "R-002"
+            ],
+            "AN-016": [
+              "R-002"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[post_close_entry] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[post_close_entry] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "self_approval",
+          "caught_by": {
+            "AN-017": [
+              "R-009"
+            ],
+            "AN-018": [
+              "R-009"
+            ],
+            "AN-019": [
+              "R-009"
+            ],
+            "AN-020": [
+              "R-009"
+            ],
+            "AN-021": [
+              "R-009"
+            ],
+            "AN-022": [
+              "R-009"
+            ],
+            "AN-023": [
+              "R-009"
+            ],
+            "AN-024": [
+              "R-009"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[self_approval] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[self_approval] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "threshold_shaving",
+          "caught_by": {
+            "AN-041": [
+              "R-005"
+            ],
+            "AN-042": [
+              "R-005"
+            ],
+            "AN-043": [
+              "R-005"
+            ],
+            "AN-044": [
+              "R-005"
+            ],
+            "AN-045": [
+              "R-005"
+            ],
+            "AN-046": [
+              "R-005"
+            ],
+            "AN-047": [
+              "R-005"
+            ],
+            "AN-048": [
+              "R-005"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[threshold_shaving] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[threshold_shaving] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "unbalanced_entry",
+          "caught_by": {
+            "AN-057": [
+              "R-001"
+            ],
+            "AN-058": [
+              "R-001"
+            ],
+            "AN-059": [
+              "R-001"
+            ],
+            "AN-060": [
+              "R-001"
+            ],
+            "AN-061": [
+              "R-001"
+            ],
+            "AN-062": [
+              "R-001"
+            ],
+            "AN-063": [
+              "R-001"
+            ],
+            "AN-064": [
+              "R-001"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unbalanced_entry] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unbalanced_entry] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "unusual_pairing",
+          "caught_by": {
+            "AN-081": [
+              "R-008"
+            ],
+            "AN-082": [
+              "R-008"
+            ],
+            "AN-083": [
+              "R-008"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 3,
+          "n_detected_designed": 3,
+          "n_planted": 3,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.438503,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unusual_pairing] (any rule)",
+            "method": "wilson",
+            "n": 3,
+            "numerator": 3,
+            "rendered": "1.0000 (95% wilson 0.4385-1.0000, n=3)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.438503,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unusual_pairing] (designed rules)",
+            "method": "wilson",
+            "n": 3,
+            "numerator": 3,
+            "rendered": "1.0000 (95% wilson 0.4385-1.0000, n=3)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "weekend_manual",
+          "caught_by": {
+            "AN-073": [
+              "R-003"
+            ],
+            "AN-074": [
+              "R-003"
+            ],
+            "AN-075": [
+              "R-003"
+            ],
+            "AN-076": [
+              "R-003"
+            ],
+            "AN-077": [
+              "R-003"
+            ],
+            "AN-078": [
+              "R-003"
+            ],
+            "AN-079": [
+              "R-003"
+            ],
+            "AN-080": [
+              "R-003"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[weekend_manual] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[weekend_manual] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        }
+      ],
+      "fp_per_10k": 223.18,
+      "fp_rate": {
+        "confidence": 0.95,
+        "direction": "lower_is_better",
+        "interval": [
+          0.02036,
+          0.02446
+        ],
+        "kind": "proportion",
+        "label": "false-positive rate (clean entries)",
+        "method": "wilson",
+        "n": 19984,
+        "numerator": 446,
+        "rendered": "0.0223 (95% wilson 0.0204-0.0245, n=19984)",
+        "value": 0.022318
+      },
+      "n_entries": 20099,
+      "n_flagged_entries": 561,
+      "n_planted_entries": 115,
+      "n_planted_instances": 83,
+      "precision": {
+        "confidence": 0.95,
+        "direction": "higher_is_better",
+        "interval": [
+          0.173645,
+          0.24035
+        ],
+        "kind": "proportion",
+        "label": "precision (battery, entry level)",
+        "method": "wilson",
+        "n": 561,
+        "numerator": 115,
+        "rendered": "0.2050 (95% wilson 0.1736-0.2403, n=561)",
+        "value": 0.204991
+      },
+      "rule_grades": [
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-001]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-001"
+        },
+        {
+          "n_false": 312,
+          "n_flags": 328,
+          "n_true": 16,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.030246,
+              0.077762
+            ],
+            "kind": "proportion",
+            "label": "precision[R-002]",
+            "method": "wilson",
+            "n": 328,
+            "numerator": 16,
+            "rendered": "0.0488 (95% wilson 0.0302-0.0778, n=328)",
+            "value": 0.04878
+          },
+          "rule_id": "R-002"
+        },
+        {
+          "n_false": 6,
+          "n_flags": 14,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.325906,
+              0.786192
+            ],
+            "kind": "proportion",
+            "label": "precision[R-003]",
+            "method": "wilson",
+            "n": 14,
+            "numerator": 8,
+            "rendered": "0.5714 (95% wilson 0.3259-0.7862, n=14)",
+            "value": 0.571429
+          },
+          "rule_id": "R-003"
+        },
+        {
+          "n_false": 12,
+          "n_flags": 20,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.218807,
+              0.613418
+            ],
+            "kind": "proportion",
+            "label": "precision[R-004]",
+            "method": "wilson",
+            "n": 20,
+            "numerator": 8,
+            "rendered": "0.4000 (95% wilson 0.2188-0.6134, n=20)",
+            "value": 0.4
+          },
+          "rule_id": "R-004"
+        },
+        {
+          "n_false": 116,
+          "n_flags": 140,
+          "n_true": 24,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.117991,
+              0.242416
+            ],
+            "kind": "proportion",
+            "label": "precision[R-005]",
+            "method": "wilson",
+            "n": 140,
+            "numerator": 24,
+            "rendered": "0.1714 (95% wilson 0.1180-0.2424, n=140)",
+            "value": 0.171429
+          },
+          "rule_id": "R-005"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-006]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-006"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-007]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-007"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 3,
+          "n_true": 3,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.438503,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-008]",
+            "method": "wilson",
+            "n": 3,
+            "numerator": 3,
+            "rendered": "1.0000 (95% wilson 0.4385-1.0000, n=3)",
+            "value": 1.0
+          },
+          "rule_id": "R-008"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-009]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-009"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 20,
+          "n_true": 20,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.838875,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-010]",
+            "method": "wilson",
+            "n": 20,
+            "numerator": 20,
+            "rendered": "1.0000 (95% wilson 0.8389-1.0000, n=20)",
+            "value": 1.0
+          },
+          "rule_id": "R-010"
+        },
+        {
+          "n_false": 2,
+          "n_flags": 18,
+          "n_true": 16,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.672002,
+              0.96898
+            ],
+            "kind": "proportion",
+            "label": "precision[R-011]",
+            "method": "wilson",
+            "n": 18,
+            "numerator": 16,
+            "rendered": "0.8889 (95% wilson 0.6720-0.9690, n=18)",
+            "value": 0.888889
+          },
+          "rule_id": "R-011"
+        }
+      ],
+      "seed": 8101
+    },
+    {
+      "anomaly_seed": 8102,
+      "benford_notes": {
+        "first_digit": {
+          "applicable": true,
+          "conclusion": "conforming",
+          "mad": 0.002407
+        },
+        "second_digit": {
+          "applicable": true,
+          "conclusion": "conforming",
+          "mad": 0.002188
+        }
+      },
+      "class_grades": [
+        {
+          "anomaly_class": "dormant_reactivation",
+          "caught_by": {
+            "AN-049": [
+              "R-007"
+            ],
+            "AN-050": [
+              "R-007"
+            ],
+            "AN-051": [
+              "R-007"
+            ],
+            "AN-052": [
+              "R-007"
+            ],
+            "AN-053": [
+              "R-007"
+            ],
+            "AN-054": [
+              "R-007",
+              "R-008"
+            ],
+            "AN-055": [
+              "R-007"
+            ],
+            "AN-056": [
+              "R-007"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[dormant_reactivation] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[dormant_reactivation] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "duplicate_pair",
+          "caught_by": {
+            "AN-025": [
+              "R-010"
+            ],
+            "AN-026": [
+              "R-010"
+            ],
+            "AN-027": [
+              "R-010"
+            ],
+            "AN-028": [
+              "R-010"
+            ],
+            "AN-029": [
+              "R-010"
+            ],
+            "AN-030": [
+              "R-010"
+            ],
+            "AN-031": [
+              "R-010"
+            ],
+            "AN-032": [
+              "R-010"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[duplicate_pair] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[duplicate_pair] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "late_round_dollar",
+          "caught_by": {
+            "AN-001": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-002": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-003": [
+              "R-002",
+              "R-004",
+              "R-010"
+            ],
+            "AN-004": [
+              "R-002",
+              "R-004",
+              "R-010"
+            ],
+            "AN-005": [
+              "R-002",
+              "R-004",
+              "R-010"
+            ],
+            "AN-006": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-007": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-008": [
+              "R-002",
+              "R-004",
+              "R-010"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[late_round_dollar] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[late_round_dollar] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "missing_description",
+          "caught_by": {
+            "AN-065": [
+              "R-006"
+            ],
+            "AN-066": [
+              "R-006"
+            ],
+            "AN-067": [
+              "R-002",
+              "R-006"
+            ],
+            "AN-068": [
+              "R-006"
+            ],
+            "AN-069": [
+              "R-006"
+            ],
+            "AN-070": [
+              "R-006"
+            ],
+            "AN-071": [
+              "R-006"
+            ],
+            "AN-072": [
+              "R-006"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[missing_description] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[missing_description] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "near_duplicate",
+          "caught_by": {
+            "AN-033": [
+              "R-011"
+            ],
+            "AN-034": [
+              "R-011"
+            ],
+            "AN-035": [
+              "R-011"
+            ],
+            "AN-036": [
+              "R-011"
+            ],
+            "AN-037": [
+              "R-011"
+            ],
+            "AN-038": [
+              "R-011"
+            ],
+            "AN-039": [
+              "R-011"
+            ],
+            "AN-040": [
+              "R-011"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[near_duplicate] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[near_duplicate] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "post_close_entry",
+          "caught_by": {
+            "AN-009": [
+              "R-002"
+            ],
+            "AN-010": [
+              "R-002"
+            ],
+            "AN-011": [
+              "R-002"
+            ],
+            "AN-012": [
+              "R-002"
+            ],
+            "AN-013": [
+              "R-002"
+            ],
+            "AN-014": [
+              "R-002"
+            ],
+            "AN-015": [
+              "R-002"
+            ],
+            "AN-016": [
+              "R-002"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[post_close_entry] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[post_close_entry] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "self_approval",
+          "caught_by": {
+            "AN-017": [
+              "R-009"
+            ],
+            "AN-018": [
+              "R-009"
+            ],
+            "AN-019": [
+              "R-009"
+            ],
+            "AN-020": [
+              "R-009"
+            ],
+            "AN-021": [
+              "R-009"
+            ],
+            "AN-022": [
+              "R-009"
+            ],
+            "AN-023": [
+              "R-009"
+            ],
+            "AN-024": [
+              "R-009"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[self_approval] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[self_approval] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "threshold_shaving",
+          "caught_by": {
+            "AN-041": [
+              "R-005"
+            ],
+            "AN-042": [
+              "R-005"
+            ],
+            "AN-043": [
+              "R-005"
+            ],
+            "AN-044": [
+              "R-005"
+            ],
+            "AN-045": [
+              "R-005"
+            ],
+            "AN-046": [
+              "R-005"
+            ],
+            "AN-047": [
+              "R-005"
+            ],
+            "AN-048": [
+              "R-005"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[threshold_shaving] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[threshold_shaving] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "unbalanced_entry",
+          "caught_by": {
+            "AN-057": [
+              "R-001"
+            ],
+            "AN-058": [
+              "R-001"
+            ],
+            "AN-059": [
+              "R-001"
+            ],
+            "AN-060": [
+              "R-001"
+            ],
+            "AN-061": [
+              "R-001"
+            ],
+            "AN-062": [
+              "R-001"
+            ],
+            "AN-063": [
+              "R-001"
+            ],
+            "AN-064": [
+              "R-001"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unbalanced_entry] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unbalanced_entry] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "unusual_pairing",
+          "caught_by": {
+            "AN-081": [
+              "R-008"
+            ],
+            "AN-082": [
+              "R-008"
+            ],
+            "AN-083": [
+              "R-008"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 3,
+          "n_detected_designed": 3,
+          "n_planted": 3,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.438503,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unusual_pairing] (any rule)",
+            "method": "wilson",
+            "n": 3,
+            "numerator": 3,
+            "rendered": "1.0000 (95% wilson 0.4385-1.0000, n=3)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.438503,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unusual_pairing] (designed rules)",
+            "method": "wilson",
+            "n": 3,
+            "numerator": 3,
+            "rendered": "1.0000 (95% wilson 0.4385-1.0000, n=3)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "weekend_manual",
+          "caught_by": {
+            "AN-073": [
+              "R-003"
+            ],
+            "AN-074": [
+              "R-003"
+            ],
+            "AN-075": [
+              "R-003"
+            ],
+            "AN-076": [
+              "R-003"
+            ],
+            "AN-077": [
+              "R-003"
+            ],
+            "AN-078": [
+              "R-003"
+            ],
+            "AN-079": [
+              "R-003"
+            ],
+            "AN-080": [
+              "R-003"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[weekend_manual] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[weekend_manual] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        }
+      ],
+      "fp_per_10k": 201.16,
+      "fp_rate": {
+        "confidence": 0.95,
+        "direction": "lower_is_better",
+        "interval": [
+          0.01826,
+          0.022157
+        ],
+        "kind": "proportion",
+        "label": "false-positive rate (clean entries)",
+        "method": "wilson",
+        "n": 19984,
+        "numerator": 402,
+        "rendered": "0.0201 (95% wilson 0.0183-0.0222, n=19984)",
+        "value": 0.020116
+      },
+      "n_entries": 20099,
+      "n_flagged_entries": 517,
+      "n_planted_entries": 115,
+      "n_planted_instances": 83,
+      "precision": {
+        "confidence": 0.95,
+        "direction": "higher_is_better",
+        "interval": [
+          0.188709,
+          0.260259
+        ],
+        "kind": "proportion",
+        "label": "precision (battery, entry level)",
+        "method": "wilson",
+        "n": 517,
+        "numerator": 115,
+        "rendered": "0.2224 (95% wilson 0.1887-0.2603, n=517)",
+        "value": 0.222437
+      },
+      "rule_grades": [
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-001]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-001"
+        },
+        {
+          "n_false": 290,
+          "n_flags": 307,
+          "n_true": 17,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.034857,
+              0.086882
+            ],
+            "kind": "proportion",
+            "label": "precision[R-002]",
+            "method": "wilson",
+            "n": 307,
+            "numerator": 17,
+            "rendered": "0.0554 (95% wilson 0.0349-0.0869, n=307)",
+            "value": 0.055375
+          },
+          "rule_id": "R-002"
+        },
+        {
+          "n_false": 6,
+          "n_flags": 14,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.325906,
+              0.786192
+            ],
+            "kind": "proportion",
+            "label": "precision[R-003]",
+            "method": "wilson",
+            "n": 14,
+            "numerator": 8,
+            "rendered": "0.5714 (95% wilson 0.3259-0.7862, n=14)",
+            "value": 0.571429
+          },
+          "rule_id": "R-003"
+        },
+        {
+          "n_false": 12,
+          "n_flags": 20,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.218807,
+              0.613418
+            ],
+            "kind": "proportion",
+            "label": "precision[R-004]",
+            "method": "wilson",
+            "n": 20,
+            "numerator": 8,
+            "rendered": "0.4000 (95% wilson 0.2188-0.6134, n=20)",
+            "value": 0.4
+          },
+          "rule_id": "R-004"
+        },
+        {
+          "n_false": 91,
+          "n_flags": 115,
+          "n_true": 24,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.144445,
+              0.291778
+            ],
+            "kind": "proportion",
+            "label": "precision[R-005]",
+            "method": "wilson",
+            "n": 115,
+            "numerator": 24,
+            "rendered": "0.2087 (95% wilson 0.1444-0.2918, n=115)",
+            "value": 0.208696
+          },
+          "rule_id": "R-005"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-006]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-006"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-007]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-007"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 4,
+          "n_true": 4,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.510109,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-008]",
+            "method": "wilson",
+            "n": 4,
+            "numerator": 4,
+            "rendered": "1.0000 (95% wilson 0.5101-1.0000, n=4)",
+            "value": 1.0
+          },
+          "rule_id": "R-008"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-009]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-009"
+        },
+        {
+          "n_false": 2,
+          "n_flags": 22,
+          "n_true": 20,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.721851,
+              0.974705
+            ],
+            "kind": "proportion",
+            "label": "precision[R-010]",
+            "method": "wilson",
+            "n": 22,
+            "numerator": 20,
+            "rendered": "0.9091 (95% wilson 0.7219-0.9747, n=22)",
+            "value": 0.909091
+          },
+          "rule_id": "R-010"
+        },
+        {
+          "n_false": 4,
+          "n_flags": 20,
+          "n_true": 16,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.583983,
+              0.919342
+            ],
+            "kind": "proportion",
+            "label": "precision[R-011]",
+            "method": "wilson",
+            "n": 20,
+            "numerator": 16,
+            "rendered": "0.8000 (95% wilson 0.5840-0.9193, n=20)",
+            "value": 0.8
+          },
+          "rule_id": "R-011"
+        }
+      ],
+      "seed": 8102
+    },
+    {
+      "anomaly_seed": 8103,
+      "benford_notes": {
+        "first_digit": {
+          "applicable": true,
+          "conclusion": "conforming",
+          "mad": 0.001183
+        },
+        "second_digit": {
+          "applicable": true,
+          "conclusion": "conforming",
+          "mad": 0.00117
+        }
+      },
+      "class_grades": [
+        {
+          "anomaly_class": "dormant_reactivation",
+          "caught_by": {
+            "AN-049": [
+              "R-007"
+            ],
+            "AN-050": [
+              "R-007"
+            ],
+            "AN-051": [
+              "R-007"
+            ],
+            "AN-052": [
+              "R-007"
+            ],
+            "AN-053": [
+              "R-007"
+            ],
+            "AN-054": [
+              "R-007"
+            ],
+            "AN-055": [
+              "R-007"
+            ],
+            "AN-056": [
+              "R-002",
+              "R-007"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[dormant_reactivation] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[dormant_reactivation] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "duplicate_pair",
+          "caught_by": {
+            "AN-025": [
+              "R-010"
+            ],
+            "AN-026": [
+              "R-010"
+            ],
+            "AN-027": [
+              "R-010"
+            ],
+            "AN-028": [
+              "R-010"
+            ],
+            "AN-029": [
+              "R-010"
+            ],
+            "AN-030": [
+              "R-010"
+            ],
+            "AN-031": [
+              "R-010"
+            ],
+            "AN-032": [
+              "R-010"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[duplicate_pair] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[duplicate_pair] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "late_round_dollar",
+          "caught_by": {
+            "AN-001": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-002": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-003": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-004": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-005": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-006": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-007": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-008": [
+              "R-002",
+              "R-004"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[late_round_dollar] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[late_round_dollar] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "missing_description",
+          "caught_by": {
+            "AN-065": [
+              "R-006"
+            ],
+            "AN-066": [
+              "R-006"
+            ],
+            "AN-067": [
+              "R-006"
+            ],
+            "AN-068": [
+              "R-006"
+            ],
+            "AN-069": [
+              "R-006"
+            ],
+            "AN-070": [
+              "R-006"
+            ],
+            "AN-071": [
+              "R-006"
+            ],
+            "AN-072": [
+              "R-006"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[missing_description] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[missing_description] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "near_duplicate",
+          "caught_by": {
+            "AN-033": [
+              "R-011"
+            ],
+            "AN-034": [
+              "R-011"
+            ],
+            "AN-035": [
+              "R-011"
+            ],
+            "AN-037": [
+              "R-011"
+            ],
+            "AN-038": [
+              "R-011"
+            ],
+            "AN-039": [
+              "R-011"
+            ],
+            "AN-040": [
+              "R-011"
+            ]
+          },
+          "missed": [
+            "AN-036"
+          ],
+          "n_detected_any": 7,
+          "n_detected_designed": 7,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.529112,
+              0.977583
+            ],
+            "kind": "proportion",
+            "label": "recall[near_duplicate] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 7,
+            "rendered": "0.8750 (95% wilson 0.5291-0.9776, n=8)",
+            "value": 0.875
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.529112,
+              0.977583
+            ],
+            "kind": "proportion",
+            "label": "recall[near_duplicate] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 7,
+            "rendered": "0.8750 (95% wilson 0.5291-0.9776, n=8)",
+            "value": 0.875
+          }
+        },
+        {
+          "anomaly_class": "post_close_entry",
+          "caught_by": {
+            "AN-009": [
+              "R-002"
+            ],
+            "AN-010": [
+              "R-002"
+            ],
+            "AN-011": [
+              "R-002"
+            ],
+            "AN-012": [
+              "R-002"
+            ],
+            "AN-013": [
+              "R-002"
+            ],
+            "AN-014": [
+              "R-002"
+            ],
+            "AN-015": [
+              "R-002"
+            ],
+            "AN-016": [
+              "R-002"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[post_close_entry] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[post_close_entry] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "self_approval",
+          "caught_by": {
+            "AN-017": [
+              "R-009"
+            ],
+            "AN-018": [
+              "R-009"
+            ],
+            "AN-019": [
+              "R-009"
+            ],
+            "AN-020": [
+              "R-009"
+            ],
+            "AN-021": [
+              "R-009"
+            ],
+            "AN-022": [
+              "R-009"
+            ],
+            "AN-023": [
+              "R-009"
+            ],
+            "AN-024": [
+              "R-009"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[self_approval] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[self_approval] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "threshold_shaving",
+          "caught_by": {
+            "AN-041": [
+              "R-005"
+            ],
+            "AN-042": [
+              "R-005"
+            ],
+            "AN-043": [
+              "R-005"
+            ],
+            "AN-044": [
+              "R-005"
+            ],
+            "AN-045": [
+              "R-005"
+            ],
+            "AN-046": [
+              "R-005"
+            ],
+            "AN-047": [
+              "R-005"
+            ],
+            "AN-048": [
+              "R-005"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[threshold_shaving] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[threshold_shaving] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "unbalanced_entry",
+          "caught_by": {
+            "AN-057": [
+              "R-001"
+            ],
+            "AN-058": [
+              "R-001"
+            ],
+            "AN-059": [
+              "R-001"
+            ],
+            "AN-060": [
+              "R-001"
+            ],
+            "AN-061": [
+              "R-001"
+            ],
+            "AN-062": [
+              "R-001"
+            ],
+            "AN-063": [
+              "R-001"
+            ],
+            "AN-064": [
+              "R-001"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unbalanced_entry] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unbalanced_entry] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "unusual_pairing",
+          "caught_by": {
+            "AN-081": [
+              "R-008"
+            ],
+            "AN-082": [
+              "R-008"
+            ],
+            "AN-083": [
+              "R-008"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 3,
+          "n_detected_designed": 3,
+          "n_planted": 3,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.438503,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unusual_pairing] (any rule)",
+            "method": "wilson",
+            "n": 3,
+            "numerator": 3,
+            "rendered": "1.0000 (95% wilson 0.4385-1.0000, n=3)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.438503,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unusual_pairing] (designed rules)",
+            "method": "wilson",
+            "n": 3,
+            "numerator": 3,
+            "rendered": "1.0000 (95% wilson 0.4385-1.0000, n=3)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "weekend_manual",
+          "caught_by": {
+            "AN-073": [
+              "R-003"
+            ],
+            "AN-074": [
+              "R-003"
+            ],
+            "AN-075": [
+              "R-003"
+            ],
+            "AN-076": [
+              "R-003"
+            ],
+            "AN-077": [
+              "R-003"
+            ],
+            "AN-078": [
+              "R-003"
+            ],
+            "AN-079": [
+              "R-003"
+            ],
+            "AN-080": [
+              "R-003"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[weekend_manual] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[weekend_manual] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        }
+      ],
+      "fp_per_10k": 236.69,
+      "fp_rate": {
+        "confidence": 0.95,
+        "direction": "lower_is_better",
+        "interval": [
+          0.021651,
+          0.02587
+        ],
+        "kind": "proportion",
+        "label": "false-positive rate (clean entries)",
+        "method": "wilson",
+        "n": 19984,
+        "numerator": 473,
+        "rendered": "0.0237 (95% wilson 0.0217-0.0259, n=19984)",
+        "value": 0.023669
+      },
+      "n_entries": 20099,
+      "n_flagged_entries": 586,
+      "n_planted_entries": 115,
+      "n_planted_instances": 83,
+      "precision": {
+        "confidence": 0.95,
+        "direction": "higher_is_better",
+        "interval": [
+          0.162932,
+          0.226735
+        ],
+        "kind": "proportion",
+        "label": "precision (battery, entry level)",
+        "method": "wilson",
+        "n": 586,
+        "numerator": 113,
+        "rendered": "0.1928 (95% wilson 0.1629-0.2267, n=586)",
+        "value": 0.192833
+      },
+      "rule_grades": [
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-001]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-001"
+        },
+        {
+          "n_false": 337,
+          "n_flags": 354,
+          "n_true": 17,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.030196,
+              0.075553
+            ],
+            "kind": "proportion",
+            "label": "precision[R-002]",
+            "method": "wilson",
+            "n": 354,
+            "numerator": 17,
+            "rendered": "0.0480 (95% wilson 0.0302-0.0756, n=354)",
+            "value": 0.048023
+          },
+          "rule_id": "R-002"
+        },
+        {
+          "n_false": 6,
+          "n_flags": 14,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.325906,
+              0.786192
+            ],
+            "kind": "proportion",
+            "label": "precision[R-003]",
+            "method": "wilson",
+            "n": 14,
+            "numerator": 8,
+            "rendered": "0.5714 (95% wilson 0.3259-0.7862, n=14)",
+            "value": 0.571429
+          },
+          "rule_id": "R-003"
+        },
+        {
+          "n_false": 12,
+          "n_flags": 20,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.218807,
+              0.613418
+            ],
+            "kind": "proportion",
+            "label": "precision[R-004]",
+            "method": "wilson",
+            "n": 20,
+            "numerator": 8,
+            "rendered": "0.4000 (95% wilson 0.2188-0.6134, n=20)",
+            "value": 0.4
+          },
+          "rule_id": "R-004"
+        },
+        {
+          "n_false": 118,
+          "n_flags": 142,
+          "n_true": 24,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.116288,
+              0.239177
+            ],
+            "kind": "proportion",
+            "label": "precision[R-005]",
+            "method": "wilson",
+            "n": 142,
+            "numerator": 24,
+            "rendered": "0.1690 (95% wilson 0.1163-0.2392, n=142)",
+            "value": 0.169014
+          },
+          "rule_id": "R-005"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-006]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-006"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-007]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-007"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 3,
+          "n_true": 3,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.438503,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-008]",
+            "method": "wilson",
+            "n": 3,
+            "numerator": 3,
+            "rendered": "1.0000 (95% wilson 0.4385-1.0000, n=3)",
+            "value": 1.0
+          },
+          "rule_id": "R-008"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-009]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-009"
+        },
+        {
+          "n_false": 2,
+          "n_flags": 18,
+          "n_true": 16,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.672002,
+              0.96898
+            ],
+            "kind": "proportion",
+            "label": "precision[R-010]",
+            "method": "wilson",
+            "n": 18,
+            "numerator": 16,
+            "rendered": "0.8889 (95% wilson 0.6720-0.9690, n=18)",
+            "value": 0.888889
+          },
+          "rule_id": "R-010"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 14,
+          "n_true": 14,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.784689,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-011]",
+            "method": "wilson",
+            "n": 14,
+            "numerator": 14,
+            "rendered": "1.0000 (95% wilson 0.7847-1.0000, n=14)",
+            "value": 1.0
+          },
+          "rule_id": "R-011"
+        }
+      ],
+      "seed": 8103
+    },
+    {
+      "anomaly_seed": 8104,
+      "benford_notes": {
+        "first_digit": {
+          "applicable": true,
+          "conclusion": "conforming",
+          "mad": 0.001831
+        },
+        "second_digit": {
+          "applicable": true,
+          "conclusion": "conforming",
+          "mad": 0.001487
+        }
+      },
+      "class_grades": [
+        {
+          "anomaly_class": "dormant_reactivation",
+          "caught_by": {
+            "AN-049": [
+              "R-007"
+            ],
+            "AN-050": [
+              "R-007"
+            ],
+            "AN-051": [
+              "R-007"
+            ],
+            "AN-052": [
+              "R-007"
+            ],
+            "AN-053": [
+              "R-007"
+            ],
+            "AN-054": [
+              "R-007"
+            ],
+            "AN-055": [
+              "R-007"
+            ],
+            "AN-056": [
+              "R-007"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[dormant_reactivation] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[dormant_reactivation] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "duplicate_pair",
+          "caught_by": {
+            "AN-025": [
+              "R-010"
+            ],
+            "AN-026": [
+              "R-010"
+            ],
+            "AN-027": [
+              "R-010"
+            ],
+            "AN-028": [
+              "R-010"
+            ],
+            "AN-029": [
+              "R-010"
+            ],
+            "AN-030": [
+              "R-010"
+            ],
+            "AN-031": [
+              "R-010"
+            ],
+            "AN-032": [
+              "R-010"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[duplicate_pair] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[duplicate_pair] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "late_round_dollar",
+          "caught_by": {
+            "AN-001": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-002": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-003": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-004": [
+              "R-002",
+              "R-004",
+              "R-010"
+            ],
+            "AN-005": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-006": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-007": [
+              "R-002",
+              "R-004",
+              "R-010"
+            ],
+            "AN-008": [
+              "R-002",
+              "R-004"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[late_round_dollar] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[late_round_dollar] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "missing_description",
+          "caught_by": {
+            "AN-065": [
+              "R-006"
+            ],
+            "AN-066": [
+              "R-006"
+            ],
+            "AN-067": [
+              "R-006"
+            ],
+            "AN-068": [
+              "R-006"
+            ],
+            "AN-069": [
+              "R-006"
+            ],
+            "AN-070": [
+              "R-006"
+            ],
+            "AN-071": [
+              "R-006"
+            ],
+            "AN-072": [
+              "R-006"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[missing_description] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[missing_description] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "near_duplicate",
+          "caught_by": {
+            "AN-033": [
+              "R-011"
+            ],
+            "AN-034": [
+              "R-011"
+            ],
+            "AN-035": [
+              "R-011"
+            ],
+            "AN-036": [
+              "R-011"
+            ],
+            "AN-037": [
+              "R-011"
+            ],
+            "AN-038": [
+              "R-011"
+            ],
+            "AN-039": [
+              "R-011"
+            ],
+            "AN-040": [
+              "R-011"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[near_duplicate] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[near_duplicate] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "post_close_entry",
+          "caught_by": {
+            "AN-009": [
+              "R-002"
+            ],
+            "AN-010": [
+              "R-002"
+            ],
+            "AN-011": [
+              "R-002"
+            ],
+            "AN-012": [
+              "R-002"
+            ],
+            "AN-013": [
+              "R-002"
+            ],
+            "AN-014": [
+              "R-002"
+            ],
+            "AN-015": [
+              "R-002"
+            ],
+            "AN-016": [
+              "R-002"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[post_close_entry] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[post_close_entry] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "self_approval",
+          "caught_by": {
+            "AN-017": [
+              "R-009"
+            ],
+            "AN-018": [
+              "R-009"
+            ],
+            "AN-019": [
+              "R-009"
+            ],
+            "AN-020": [
+              "R-009"
+            ],
+            "AN-021": [
+              "R-009"
+            ],
+            "AN-022": [
+              "R-009"
+            ],
+            "AN-023": [
+              "R-009"
+            ],
+            "AN-024": [
+              "R-009"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[self_approval] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[self_approval] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "threshold_shaving",
+          "caught_by": {
+            "AN-041": [
+              "R-005"
+            ],
+            "AN-042": [
+              "R-005"
+            ],
+            "AN-043": [
+              "R-005"
+            ],
+            "AN-044": [
+              "R-005"
+            ],
+            "AN-045": [
+              "R-005"
+            ],
+            "AN-046": [
+              "R-005"
+            ],
+            "AN-047": [
+              "R-005"
+            ],
+            "AN-048": [
+              "R-005"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[threshold_shaving] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[threshold_shaving] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "unbalanced_entry",
+          "caught_by": {
+            "AN-057": [
+              "R-001"
+            ],
+            "AN-058": [
+              "R-001"
+            ],
+            "AN-059": [
+              "R-001"
+            ],
+            "AN-060": [
+              "R-001"
+            ],
+            "AN-061": [
+              "R-001"
+            ],
+            "AN-062": [
+              "R-001"
+            ],
+            "AN-063": [
+              "R-001"
+            ],
+            "AN-064": [
+              "R-001"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unbalanced_entry] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unbalanced_entry] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "unusual_pairing",
+          "caught_by": {
+            "AN-081": [
+              "R-008"
+            ],
+            "AN-082": [
+              "R-008"
+            ],
+            "AN-083": [
+              "R-008"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 3,
+          "n_detected_designed": 3,
+          "n_planted": 3,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.438503,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unusual_pairing] (any rule)",
+            "method": "wilson",
+            "n": 3,
+            "numerator": 3,
+            "rendered": "1.0000 (95% wilson 0.4385-1.0000, n=3)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.438503,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unusual_pairing] (designed rules)",
+            "method": "wilson",
+            "n": 3,
+            "numerator": 3,
+            "rendered": "1.0000 (95% wilson 0.4385-1.0000, n=3)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "weekend_manual",
+          "caught_by": {
+            "AN-073": [
+              "R-003"
+            ],
+            "AN-074": [
+              "R-003"
+            ],
+            "AN-075": [
+              "R-003"
+            ],
+            "AN-076": [
+              "R-003"
+            ],
+            "AN-077": [
+              "R-003"
+            ],
+            "AN-078": [
+              "R-003"
+            ],
+            "AN-079": [
+              "R-003"
+            ],
+            "AN-080": [
+              "R-003"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[weekend_manual] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[weekend_manual] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        }
+      ],
+      "fp_per_10k": 229.18,
+      "fp_rate": {
+        "confidence": 0.95,
+        "direction": "lower_is_better",
+        "interval": [
+          0.020933,
+          0.025087
+        ],
+        "kind": "proportion",
+        "label": "false-positive rate (clean entries)",
+        "method": "wilson",
+        "n": 19984,
+        "numerator": 458,
+        "rendered": "0.0229 (95% wilson 0.0209-0.0251, n=19984)",
+        "value": 0.022918
+      },
+      "n_entries": 20099,
+      "n_flagged_entries": 573,
+      "n_planted_entries": 115,
+      "n_planted_instances": 83,
+      "precision": {
+        "confidence": 0.95,
+        "direction": "higher_is_better",
+        "interval": [
+          0.169946,
+          0.235437
+        ],
+        "kind": "proportion",
+        "label": "precision (battery, entry level)",
+        "method": "wilson",
+        "n": 573,
+        "numerator": 115,
+        "rendered": "0.2007 (95% wilson 0.1699-0.2354, n=573)",
+        "value": 0.200698
+      },
+      "rule_grades": [
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-001]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-001"
+        },
+        {
+          "n_false": 336,
+          "n_flags": 352,
+          "n_true": 16,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.02817,
+              0.072553
+            ],
+            "kind": "proportion",
+            "label": "precision[R-002]",
+            "method": "wilson",
+            "n": 352,
+            "numerator": 16,
+            "rendered": "0.0455 (95% wilson 0.0282-0.0726, n=352)",
+            "value": 0.045455
+          },
+          "rule_id": "R-002"
+        },
+        {
+          "n_false": 6,
+          "n_flags": 14,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.325906,
+              0.786192
+            ],
+            "kind": "proportion",
+            "label": "precision[R-003]",
+            "method": "wilson",
+            "n": 14,
+            "numerator": 8,
+            "rendered": "0.5714 (95% wilson 0.3259-0.7862, n=14)",
+            "value": 0.571429
+          },
+          "rule_id": "R-003"
+        },
+        {
+          "n_false": 12,
+          "n_flags": 20,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.218807,
+              0.613418
+            ],
+            "kind": "proportion",
+            "label": "precision[R-004]",
+            "method": "wilson",
+            "n": 20,
+            "numerator": 8,
+            "rendered": "0.4000 (95% wilson 0.2188-0.6134, n=20)",
+            "value": 0.4
+          },
+          "rule_id": "R-004"
+        },
+        {
+          "n_false": 104,
+          "n_flags": 128,
+          "n_true": 24,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.129361,
+              0.263849
+            ],
+            "kind": "proportion",
+            "label": "precision[R-005]",
+            "method": "wilson",
+            "n": 128,
+            "numerator": 24,
+            "rendered": "0.1875 (95% wilson 0.1294-0.2638, n=128)",
+            "value": 0.1875
+          },
+          "rule_id": "R-005"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-006]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-006"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-007]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-007"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 3,
+          "n_true": 3,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.438503,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-008]",
+            "method": "wilson",
+            "n": 3,
+            "numerator": 3,
+            "rendered": "1.0000 (95% wilson 0.4385-1.0000, n=3)",
+            "value": 1.0
+          },
+          "rule_id": "R-008"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-009]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-009"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 18,
+          "n_true": 18,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.824121,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-010]",
+            "method": "wilson",
+            "n": 18,
+            "numerator": 18,
+            "rendered": "1.0000 (95% wilson 0.8241-1.0000, n=18)",
+            "value": 1.0
+          },
+          "rule_id": "R-010"
+        },
+        {
+          "n_false": 2,
+          "n_flags": 18,
+          "n_true": 16,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.672002,
+              0.96898
+            ],
+            "kind": "proportion",
+            "label": "precision[R-011]",
+            "method": "wilson",
+            "n": 18,
+            "numerator": 16,
+            "rendered": "0.8889 (95% wilson 0.6720-0.9690, n=18)",
+            "value": 0.888889
+          },
+          "rule_id": "R-011"
+        }
+      ],
+      "seed": 8104
+    },
+    {
+      "anomaly_seed": 8105,
+      "benford_notes": {
+        "first_digit": {
+          "applicable": true,
+          "conclusion": "conforming",
+          "mad": 0.002262
+        },
+        "second_digit": {
+          "applicable": true,
+          "conclusion": "conforming",
+          "mad": 0.001539
+        }
+      },
+      "class_grades": [
+        {
+          "anomaly_class": "dormant_reactivation",
+          "caught_by": {
+            "AN-049": [
+              "R-007"
+            ],
+            "AN-050": [
+              "R-007"
+            ],
+            "AN-051": [
+              "R-007"
+            ],
+            "AN-052": [
+              "R-007"
+            ],
+            "AN-053": [
+              "R-007"
+            ],
+            "AN-054": [
+              "R-007"
+            ],
+            "AN-055": [
+              "R-007"
+            ],
+            "AN-056": [
+              "R-007"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[dormant_reactivation] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[dormant_reactivation] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "duplicate_pair",
+          "caught_by": {
+            "AN-025": [
+              "R-010"
+            ],
+            "AN-026": [
+              "R-010"
+            ],
+            "AN-027": [
+              "R-010"
+            ],
+            "AN-028": [
+              "R-010"
+            ],
+            "AN-029": [
+              "R-010"
+            ],
+            "AN-030": [
+              "R-010"
+            ],
+            "AN-031": [
+              "R-010"
+            ],
+            "AN-032": [
+              "R-010"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[duplicate_pair] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[duplicate_pair] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "late_round_dollar",
+          "caught_by": {
+            "AN-001": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-002": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-003": [
+              "R-002",
+              "R-004",
+              "R-010"
+            ],
+            "AN-004": [
+              "R-002",
+              "R-004",
+              "R-010"
+            ],
+            "AN-005": [
+              "R-002",
+              "R-004",
+              "R-010"
+            ],
+            "AN-006": [
+              "R-002",
+              "R-004",
+              "R-010"
+            ],
+            "AN-007": [
+              "R-002",
+              "R-004"
+            ],
+            "AN-008": [
+              "R-002",
+              "R-004"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[late_round_dollar] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[late_round_dollar] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "missing_description",
+          "caught_by": {
+            "AN-065": [
+              "R-006"
+            ],
+            "AN-066": [
+              "R-006"
+            ],
+            "AN-067": [
+              "R-006"
+            ],
+            "AN-068": [
+              "R-006"
+            ],
+            "AN-069": [
+              "R-006"
+            ],
+            "AN-070": [
+              "R-006"
+            ],
+            "AN-071": [
+              "R-006"
+            ],
+            "AN-072": [
+              "R-006"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[missing_description] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[missing_description] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "near_duplicate",
+          "caught_by": {
+            "AN-033": [
+              "R-011"
+            ],
+            "AN-034": [
+              "R-011"
+            ],
+            "AN-035": [
+              "R-011"
+            ],
+            "AN-036": [
+              "R-011"
+            ],
+            "AN-037": [
+              "R-011"
+            ],
+            "AN-038": [
+              "R-011"
+            ],
+            "AN-039": [
+              "R-011"
+            ],
+            "AN-040": [
+              "R-011"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[near_duplicate] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[near_duplicate] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "post_close_entry",
+          "caught_by": {
+            "AN-009": [
+              "R-002"
+            ],
+            "AN-010": [
+              "R-002"
+            ],
+            "AN-011": [
+              "R-002"
+            ],
+            "AN-012": [
+              "R-002"
+            ],
+            "AN-013": [
+              "R-002"
+            ],
+            "AN-014": [
+              "R-002"
+            ],
+            "AN-015": [
+              "R-002"
+            ],
+            "AN-016": [
+              "R-002"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[post_close_entry] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[post_close_entry] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "self_approval",
+          "caught_by": {
+            "AN-017": [
+              "R-009"
+            ],
+            "AN-018": [
+              "R-009"
+            ],
+            "AN-019": [
+              "R-009"
+            ],
+            "AN-020": [
+              "R-009"
+            ],
+            "AN-021": [
+              "R-009"
+            ],
+            "AN-022": [
+              "R-009"
+            ],
+            "AN-023": [
+              "R-009"
+            ],
+            "AN-024": [
+              "R-009"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[self_approval] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[self_approval] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "threshold_shaving",
+          "caught_by": {
+            "AN-041": [
+              "R-005"
+            ],
+            "AN-042": [
+              "R-005"
+            ],
+            "AN-043": [
+              "R-005"
+            ],
+            "AN-044": [
+              "R-005"
+            ],
+            "AN-045": [
+              "R-005"
+            ],
+            "AN-046": [
+              "R-005"
+            ],
+            "AN-047": [
+              "R-005"
+            ],
+            "AN-048": [
+              "R-005"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[threshold_shaving] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[threshold_shaving] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "unbalanced_entry",
+          "caught_by": {
+            "AN-057": [
+              "R-001"
+            ],
+            "AN-058": [
+              "R-001"
+            ],
+            "AN-059": [
+              "R-001"
+            ],
+            "AN-060": [
+              "R-001"
+            ],
+            "AN-061": [
+              "R-001"
+            ],
+            "AN-062": [
+              "R-001"
+            ],
+            "AN-063": [
+              "R-001"
+            ],
+            "AN-064": [
+              "R-001"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unbalanced_entry] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unbalanced_entry] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "unusual_pairing",
+          "caught_by": {
+            "AN-081": [
+              "R-008"
+            ],
+            "AN-082": [
+              "R-008"
+            ],
+            "AN-083": [
+              "R-008"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 3,
+          "n_detected_designed": 3,
+          "n_planted": 3,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.438503,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unusual_pairing] (any rule)",
+            "method": "wilson",
+            "n": 3,
+            "numerator": 3,
+            "rendered": "1.0000 (95% wilson 0.4385-1.0000, n=3)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.438503,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[unusual_pairing] (designed rules)",
+            "method": "wilson",
+            "n": 3,
+            "numerator": 3,
+            "rendered": "1.0000 (95% wilson 0.4385-1.0000, n=3)",
+            "value": 1.0
+          }
+        },
+        {
+          "anomaly_class": "weekend_manual",
+          "caught_by": {
+            "AN-073": [
+              "R-003"
+            ],
+            "AN-074": [
+              "R-003"
+            ],
+            "AN-075": [
+              "R-003"
+            ],
+            "AN-076": [
+              "R-003"
+            ],
+            "AN-077": [
+              "R-003"
+            ],
+            "AN-078": [
+              "R-003"
+            ],
+            "AN-079": [
+              "R-003"
+            ],
+            "AN-080": [
+              "R-003"
+            ]
+          },
+          "missed": [],
+          "n_detected_any": 8,
+          "n_detected_designed": 8,
+          "n_planted": 8,
+          "recall_any": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[weekend_manual] (any rule)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "recall_designed": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "recall[weekend_manual] (designed rules)",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          }
+        }
+      ],
+      "fp_per_10k": 222.18,
+      "fp_rate": {
+        "confidence": 0.95,
+        "direction": "lower_is_better",
+        "interval": [
+          0.020264,
+          0.024355
+        ],
+        "kind": "proportion",
+        "label": "false-positive rate (clean entries)",
+        "method": "wilson",
+        "n": 19984,
+        "numerator": 444,
+        "rendered": "0.0222 (95% wilson 0.0203-0.0244, n=19984)",
+        "value": 0.022218
+      },
+      "n_entries": 20099,
+      "n_flagged_entries": 559,
+      "n_planted_entries": 115,
+      "n_planted_instances": 83,
+      "precision": {
+        "confidence": 0.95,
+        "direction": "higher_is_better",
+        "interval": [
+          0.174277,
+          0.241188
+        ],
+        "kind": "proportion",
+        "label": "precision (battery, entry level)",
+        "method": "wilson",
+        "n": 559,
+        "numerator": 115,
+        "rendered": "0.2057 (95% wilson 0.1743-0.2412, n=559)",
+        "value": 0.205725
+      },
+      "rule_grades": [
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-001]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-001"
+        },
+        {
+          "n_false": 325,
+          "n_flags": 341,
+          "n_true": 16,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.029085,
+              0.074851
+            ],
+            "kind": "proportion",
+            "label": "precision[R-002]",
+            "method": "wilson",
+            "n": 341,
+            "numerator": 16,
+            "rendered": "0.0469 (95% wilson 0.0291-0.0749, n=341)",
+            "value": 0.046921
+          },
+          "rule_id": "R-002"
+        },
+        {
+          "n_false": 6,
+          "n_flags": 14,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.325906,
+              0.786192
+            ],
+            "kind": "proportion",
+            "label": "precision[R-003]",
+            "method": "wilson",
+            "n": 14,
+            "numerator": 8,
+            "rendered": "0.5714 (95% wilson 0.3259-0.7862, n=14)",
+            "value": 0.571429
+          },
+          "rule_id": "R-003"
+        },
+        {
+          "n_false": 12,
+          "n_flags": 20,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.218807,
+              0.613418
+            ],
+            "kind": "proportion",
+            "label": "precision[R-004]",
+            "method": "wilson",
+            "n": 20,
+            "numerator": 8,
+            "rendered": "0.4000 (95% wilson 0.2188-0.6134, n=20)",
+            "value": 0.4
+          },
+          "rule_id": "R-004"
+        },
+        {
+          "n_false": 97,
+          "n_flags": 121,
+          "n_true": 24,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.137068,
+              0.27819
+            ],
+            "kind": "proportion",
+            "label": "precision[R-005]",
+            "method": "wilson",
+            "n": 121,
+            "numerator": 24,
+            "rendered": "0.1983 (95% wilson 0.1371-0.2782, n=121)",
+            "value": 0.198347
+          },
+          "rule_id": "R-005"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-006]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-006"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-007]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-007"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 3,
+          "n_true": 3,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.438503,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-008]",
+            "method": "wilson",
+            "n": 3,
+            "numerator": 3,
+            "rendered": "1.0000 (95% wilson 0.4385-1.0000, n=3)",
+            "value": 1.0
+          },
+          "rule_id": "R-008"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 8,
+          "n_true": 8,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.675592,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-009]",
+            "method": "wilson",
+            "n": 8,
+            "numerator": 8,
+            "rendered": "1.0000 (95% wilson 0.6756-1.0000, n=8)",
+            "value": 1.0
+          },
+          "rule_id": "R-009"
+        },
+        {
+          "n_false": 0,
+          "n_flags": 20,
+          "n_true": 20,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.838875,
+              1.0
+            ],
+            "kind": "proportion",
+            "label": "precision[R-010]",
+            "method": "wilson",
+            "n": 20,
+            "numerator": 20,
+            "rendered": "1.0000 (95% wilson 0.8389-1.0000, n=20)",
+            "value": 1.0
+          },
+          "rule_id": "R-010"
+        },
+        {
+          "n_false": 6,
+          "n_flags": 22,
+          "n_true": 16,
+          "precision": {
+            "confidence": 0.95,
+            "direction": "higher_is_better",
+            "interval": [
+              0.518483,
+              0.868492
+            ],
+            "kind": "proportion",
+            "label": "precision[R-011]",
+            "method": "wilson",
+            "n": 22,
+            "numerator": 16,
+            "rendered": "0.7273 (95% wilson 0.5185-0.8685, n=22)",
+            "value": 0.727273
+          },
+          "rule_id": "R-011"
+        }
+      ],
+      "seed": 8105
+    }
+  ],
+  "seeds": [
+    8101,
+    8102,
+    8103,
+    8104,
+    8105
+  ],
+  "targets": {
+    "fp_rate_target": 0.02,
+    "min_sample": 20,
+    "precision_target": 0.5,
+    "recall_target": 0.9
+  }
+}

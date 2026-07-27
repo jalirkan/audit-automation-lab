@@ -10,6 +10,11 @@ __pycache__/
 # generated ledgers and runs (examples/ stays committed)
 /runs/
 /generated/
+
+# example raw ledgers are large and regenerate byte-identically from the
+# seed (python cli.py example); the manifest, flags and pack stay committed
+examples/**/ledger.json
+examples/**/ledger.csv
 *.db
 *.db-wal
 *.db-shm

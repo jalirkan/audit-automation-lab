@@ -196,7 +196,39 @@ sample *of a stratum* supports; a full-population screen is never recast
 as a statistical sample after the fact (toolkit D-031's lesson applied to
 sampling).
 
-## D-023 · 2026-07-27 · Exact counts state their n; intervals attach to inference
+## D-025 · 2026-07-27 · Pair screens are density-dependent; R-011 keys on references
+Found by the 100k example, not by unit tests: the similarity-based
+near-duplicate screen produced 5,328 flags at ledger scale — templated
+wording (same-customer receipts, same-vendor invoices) clears any fuzzy
+bar once groups are dense, because candidate pairs grow with the square of
+group size. Redesigned around how real AP dedup works: a pair flags when
+amounts are close-but-unequal AND the descriptions share the same
+*reference tokens* (digit runs like invoice or check numbers — excluding
+the entry's own account ids, which reclass wording embeds), or wording is
+nearly identical with no conflicting references. Differing references veto
+the pair (different documents legitimately read alike); identical
+referenceless prose with different amounts is deliberately unflagged
+(repeated payments on account are routine). Result: 5,328 → 95 flags, with
+recall preserved except one honest miss the card now displays — sub-$100
+resubmissions whose fixed $1 shift exceeds the 1% amount tolerance
+(39/40, inconclusive against the 0.9 floor). The gap stays visible rather
+than being tuned away, and the rule's limitations say what the screen
+cannot see.
+
+## D-026 · 2026-07-27 · The committed example regenerates; big files don't get committed
+`python cli.py example` rebuilds examples/run-001 in independent stages
+(constrained shells can run them one at a time). The 100k-entry
+ledger.json/csv are gitignored — they are pure functions of the seed —
+while the manifest, flags, workpapers, report card and figures-bearing
+README stay committed, with tests asserting internal consistency, both
+language guards over every committed document, and byte-identical manifest
+regeneration (toolkit D-034: committed artifacts and the code that makes
+them must not diverge silently). Machine-scale JSON is written compact:
+with indent, json.dumps falls back to the pure-Python encoder and turns a
+100 MB ledger into minutes of serialization. Caveat recorded: per-platform
+determinism is tested; cross-platform identity additionally assumes libm
+rounds transcendentals identically (lognormal draws), which the
+regeneration test would surface as a mismatch worth a human look. · 2026-07-27 · Exact counts state their n; intervals attach to inference
 A rule battery is a census: 12 flags in 1,226 entries is a fact about this
 ledger, not an estimate, and wrapping it in a Wilson interval would claim
 sampling error that does not exist (toolkit D-031's distinction). So

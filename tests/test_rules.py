@@ -360,6 +360,68 @@ class NearDuplicateTests(unittest.TestCase):
         led = mk_ledger([a, wide, dissimilar])
         self.assertEqual(flagged_ids(NearDuplicateRule(), led), set())
 
+    def test_different_reference_tokens_veto(self):
+        """Two invoices from the same vendor with different invoice numbers
+        are different documents; templated wording similarity must not flag
+        them (this is what keeps the screen quiet at ledger scale)."""
+        a = mk_entry(
+            "JE-000001", date(2025, 6, 2), amount=950_00,
+            debit="6300", credit="2000", desc="Bluepine Logistics inv 44821",
+            source="AP",
+        )
+        b = mk_entry(
+            "JE-000002", date(2025, 6, 5), amount=956_65,
+            debit="6300", credit="2000", desc="Bluepine Logistics inv 71203",
+            source="AP",
+        )
+        led = mk_ledger([a, b])
+        self.assertEqual(flagged_ids(NearDuplicateRule(), led), set())
+
+    def test_identical_referenceless_descriptions_are_routine(self):
+        """Repeated payments on account: identical prose, no references,
+        different amounts — routine business, not flagged."""
+        a = mk_entry(
+            "JE-000001", date(2025, 6, 2), amount=950_00,
+            desc="Receipt on account — Aurora Retail Group",
+        )
+        b = mk_entry(
+            "JE-000002", date(2025, 6, 5), amount=956_65,
+            desc="Receipt on account — Aurora Retail Group",
+        )
+        led = mk_ledger([a, b])
+        self.assertEqual(flagged_ids(NearDuplicateRule(), led), set())
+
+    def test_account_ids_in_descriptions_are_not_references(self):
+        """Regression from the 100k example: reclass descriptions embed the
+        account numbers ('Reclassification 6300 to 6350'), which must not
+        count as shared document references."""
+        a = mk_entry(
+            "JE-000001", date(2025, 6, 2), amount=950_00,
+            debit="6300", credit="6900",
+            desc="Reclassification 6900 to 6300 — coding correction",
+        )
+        b = mk_entry(
+            "JE-000002", date(2025, 6, 5), amount=956_65,
+            debit="6300", credit="6900",
+            desc="Reclassification 6900 to 6300 — coding correction",
+        )
+        led = mk_ledger([a, b])
+        self.assertEqual(flagged_ids(NearDuplicateRule(), led), set())
+
+    def test_reworded_prose_without_references_fires(self):
+        a = mk_entry(
+            "JE-000001", date(2025, 6, 2), amount=950_00,
+            desc="Monthly accrual for consulting services rendered",
+        )
+        b = mk_entry(
+            "JE-000002", date(2025, 6, 5), amount=956_65,
+            desc="Monthly accrual for consulting service rendered",
+        )
+        led = mk_ledger([a, b])
+        flags = {f.entry_id: f for f in NearDuplicateRule().evaluate(led)}
+        self.assertEqual(set(flags), {"JE-000001", "JE-000002"})
+        self.assertIn("no conflicting references", flags["JE-000001"].rationale)
+
 
 if __name__ == "__main__":
     unittest.main()
