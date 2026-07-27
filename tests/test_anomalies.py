@@ -168,17 +168,29 @@ class PlantedPropertyTests(unittest.TestCase):
             self.assertTrue(e.preparer_id.startswith("P-"))
             self.assertEqual(e.source, "GL")
 
-    def test_unusual_pairing_is_unique_to_plants(self):
-        planted = set()
+    def test_unusual_pairing_pairs_are_distinct_and_unique(self):
+        from ledger.anomalies import UNUSUAL_PAIRS
+
+        planted_pairs = []
         for a in self.by_class["unusual_pairing"]:
             (e,) = self._entries(a)
-            self.assertIn("6700", e.debit_account_ids)
-            self.assertIn("4000", e.credit_account_ids)
-            planted.add(e.entry_id)
-        # No clean entry shares the planted pairing.
-        for e in self.led.entries:
-            if "6700" in e.debit_account_ids and "4000" in e.credit_account_ids:
-                self.assertIn(e.entry_id, planted)
+            pair = (e.debit_account_ids[0], e.credit_account_ids[0])
+            self.assertIn(pair, UNUSUAL_PAIRS)
+            planted_pairs.append(pair)
+        # Each instance uses a different pair, and each planted pair occurs
+        # exactly once in the whole population.
+        self.assertEqual(len(planted_pairs), len(set(planted_pairs)))
+        for pair in planted_pairs:
+            hits = [
+                e.entry_id
+                for e in self.led.entries
+                if pair[0] in e.debit_account_ids and pair[1] in e.credit_account_ids
+            ]
+            self.assertEqual(len(hits), 1, pair)
+
+    def test_unusual_pairing_count_capped(self):
+        with self.assertRaises(ValueError):
+            generate_with_anomalies(CFG, {"unusual_pairing": 4})
 
 
 if __name__ == "__main__":

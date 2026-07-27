@@ -73,3 +73,36 @@ injection run. This is what lets Phase 3 compare "same ledger, different
 plants" meaningfully. Property tests assert every planted class actually has
 the property its manifest note claims — plants that drift from their own
 description would silently corrupt every recall number downstream.
+
+## D-011 · 2026-07-27 · Inapplicability is a first-class rule outcome
+A rule can refuse to run — `applicable()` returns why — instead of producing
+meaningless output: rare-pairing below its minimum population (everything
+looks rare), threshold rules with no threshold in metadata. Refusal renders
+as an inconclusive procedure, never a pass. This also adopts toolkit D-020's
+lesson in rule form: a missing configuration means *refuse*, not *assume a
+default and silently test something the auditor didn't configure*.
+
+## D-012 · 2026-07-27 · Period-end means the reporting period, not every month-end
+R-002 targets the final business day(s) of the fiscal year plus post-close
+entries (the AU-C 240 / ISA 240 emphasis), not every month-end. Month-end
+close activity is the documented benign pressure the generator creates on
+purpose (D-008); a rule that flagged every month-end would be a seasonality
+detector, and its workpaper says the yield is a review population, not an
+exception list.
+
+## D-013 · 2026-07-27 · The pairing rule states its no-lookahead framing
+R-008 learns pair frequencies from the same population it scores. That is
+population profiling for lead generation — no train/test split exists and
+none is claimed. A flag means "rare within this ledger", never "anomalous
+against the world", and the limitation is printed in the workpaper, not
+buried in a docstring (per toolkit D-015: screens are labelled as screens).
+Near-duplicate similarity is likewise a lexical screen (difflib), labelled
+as such.
+
+## D-014 · 2026-07-27 · Rules are complete examinations, framed that way
+Every rule examines 100% of its declared population (toolkit D-031,
+re-implemented as framing): no rule samples, so no rule's flag count invites
+projection to an unexamined remainder. Population definitions are metadata
+on the rule and are rendered into the workpaper next to the counts, and
+flags carry per-entry rationales specific enough to review without
+re-deriving the analytic.

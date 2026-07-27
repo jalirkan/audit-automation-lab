@@ -41,8 +41,16 @@ ANOMALY_CLASSES = (
     "unusual_pairing",
 )
 
-# The deliberately-rare account pairing used by the unusual_pairing scenario.
-UNUSUAL_PAIR = ("6700", "4000")  # DR interest expense / CR product revenue
+# Deliberately-rare account pairings for the unusual_pairing scenario. Each
+# instance uses a *different* pair (cycled by index): if two plants shared a
+# pair, that pair would occur twice in the population and a "pair appears
+# exactly once" criterion could never see either. Plan counts above
+# len(UNUSUAL_PAIRS) are rejected for the same reason.
+UNUSUAL_PAIRS = (
+    ("6700", "4000"),  # DR interest expense / CR product revenue
+    ("6600", "4100"),  # DR depreciation expense / CR service revenue
+    ("1300", "4900"),  # DR prepaid expenses / CR other income
+)
 
 
 @dataclass(frozen=True)
@@ -377,25 +385,26 @@ def _weekend_manual(ctx, k):
 
 def _unusual_pairing(ctx, k):
     rng = ctx.rng
-    if UNUSUAL_PAIR in ctx.clean_pairs:
+    pair = UNUSUAL_PAIRS[k % len(UNUSUAL_PAIRS)]
+    if pair in ctx.clean_pairs:
         raise RuntimeError(
-            "unusual_pairing scenario collides with a clean-population pair; "
-            "the planted pair must be absent from the clean ledger"
+            f"unusual_pairing pair {pair} collides with a clean-population "
+            f"pair; the planted pair must be absent from the clean ledger"
         )
     amount = ctx.nonround_cents(784_000, 220)
     day = rng.choice(ctx.bdays)
     e = ctx.new(
         posting_date=day,
         effective_date=day,
-        description="Reclassification adjustment — interest to revenue",
+        description="Reclassification adjustment — account recoding",
         source="GL",
         preparer_id=rng.choice(ctx.preparers),
         approver_id=rng.choice(ctx.approvers),
-        lines=ctx.two_line(UNUSUAL_PAIR[0], UNUSUAL_PAIR[1], amount),
+        lines=ctx.two_line(pair[0], pair[1], amount),
     )
     note = (
-        "Debit interest expense / credit product revenue — an account pairing "
-        "that appears nowhere else in the population"
+        f"Debit {pair[0]} / credit {pair[1]} — an account pairing that "
+        f"appears nowhere else in the population"
     )
     return [e["tmp"]], note
 
@@ -461,6 +470,11 @@ def generate_with_anomalies(cfg: GeneratorConfig, plan=None, anomaly_seed=None):
             raise ValueError(f"unknown anomaly class: {cls}")
         if not isinstance(count, int) or count < 0:
             raise ValueError(f"bad count for {cls}: {count!r}")
+    if plan.get("unusual_pairing", 0) > len(UNUSUAL_PAIRS):
+        raise ValueError(
+            f"unusual_pairing count above {len(UNUSUAL_PAIRS)} would repeat a "
+            f"pair and defeat the rarity the scenario plants"
+        )
     aseed = cfg.seed if anomaly_seed is None else anomaly_seed
 
     coa, users, raw, holidays = generate_raw(cfg)
