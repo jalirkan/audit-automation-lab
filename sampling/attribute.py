@@ -157,7 +157,7 @@ class UpperDeviationLimit:
             "statement": (
                 f"at {self.confidence:.0%} one-sided confidence, the "
                 f"deviation rate does not exceed {self.udl:.4f} "
-                f"(sample: {self.deviations}/{self.n})"
+                f"(sample: {self.deviations}/{self.n}, n={self.n})"
             ),
         }
 
