@@ -106,3 +106,43 @@ projection to an unexamined remainder. Population definitions are metadata
 on the rule and are rendered into the workpaper next to the counts, and
 flags carry per-entry rationales specific enough to review without
 re-deriving the analytic.
+
+## D-015 · 2026-07-27 · Uncertainty enforced at construction; decisions against the interval
+Implements D-004 structurally, re-implementing toolkit D-008/D-011/D-012: a
+proportion `Measurement` raises without interval, named method, confidence,
+and n; `render()` is the sanctioned display and always includes n; n=0 is
+"not tested" with interval [0,1], never "0%". Wilson is the default because
+audit rates cluster at 0 and 1, where the normal approximation reports zero
+width. `decide()` compares the interval to the threshold with three outcomes
+(pass / exception / inconclusive); min_sample gates only the pass; a
+zero-tolerance threshold switches to the attribute rule (any exception is an
+exception; a clean sample passes once n meets the minimum, interval reported
+alongside). Boundary counts (0 or n successes) pin their exact bound to 0.0
+or 1.0 rather than carrying float dust.
+
+## D-016 · 2026-07-27 · Benford decisions rest on MAD; chi-square is reported, not the decider
+Chi-square power grows with n: at ledger scale it rejects deviations far too
+small to matter, so conformity is judged on MAD against the Nigrini (2012)
+bands (cited as research constants; band values restated as numbers, and the
+survival function computed from the incomplete gamma per D-005 — no table
+transcription anywhere). The p-value is printed alongside with the reason it
+does not decide. Marginal MAD renders inconclusive, not a soft pass. Each
+digit's observed proportion is a full Measurement with its Wilson interval.
+
+## D-017 · 2026-07-27 · The Benford guard refuses rather than opines
+When preconditions fail — under 300 usable amounts, span of magnitudes below
+×100, or a repeated identical amount above 5% of the population (assigned or
+contractual numbers) — the test returns applicable=False with the reason and
+no p-value or MAD at all. A fabricated p-value on inapplicable data is the
+statistical version of the bug D-011 guards against. Found while testing:
+the first "nonconforming" fixture spanned only ×10 and the guard refused it
+— the fixture was wrong, not the guard; test data must earn applicability
+before it can fail conformity.
+
+## D-018 · 2026-07-27 · The generated ledger is empirically Benford-conforming
+Measured, not assumed: at seed 42, first-digit MAD is 0.0117 (acceptable) at
+900 entries and 0.0036 (close) at 5,000 — the lognormal amount mixture spans
+enough magnitudes to conform. Conforming fixtures for tests are constructed
+log-uniform (Benford by construction); non-conforming fixtures are
+linear-uniform across three decades. The workpaper reports whatever the
+ledger under test actually shows.
