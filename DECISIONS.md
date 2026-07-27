@@ -146,3 +146,34 @@ enough magnitudes to conform. Conforming fixtures for tests are constructed
 log-uniform (Benford by construction); non-conforming fixtures are
 linear-uniform across three decades. The workpaper reports whatever the
 ledger under test actually shows.
+
+## D-019 · 2026-07-27 · Report-card definitions are pinned in one docstring
+"Detected" = any rule flags any constituent entry id (with designed-rule
+recall reported alongside); precision is entry-level against the planted
+set; the FP denominator is clean entries only. These definitions decide
+every number on the card, so they live in one place, are restated in the
+rendered output, and the hand-computed unit test locks them (planted pair
+originals count as planted — flagging the original of a duplicate is
+correct detection, not a false positive). No wall-clock timestamps
+anywhere in card output: identity is seeds + config echo, preserving the
+byte-identity contract (D-007).
+
+## D-020 · 2026-07-27 · Small planted pools yield inconclusive, and that is the point
+Recall outcomes come from `decide()` against the interval (D-015): with the
+default plan and three seeds, 6/6 caught cannot clear a 0.9 floor at 95%,
+and the card says inconclusive rather than parading a hollow 100%. Passing
+a 0.9 recall floor on clean detections alone needs ~35 pooled instances
+(Wilson lower bound of n/n first reaches 0.9 near n=35) — the example run
+sizes its plan accordingly. Measured at seeds 301-303, n=1000: battery
+precision 0.36 (95% Wilson 0.30-0.42), FP 535 per 10k clean entries —
+deliberately unflattering, driven by the benign structure D-008 plants:
+the December window in R-002, rents in R-004, system weekend batches in
+R-003, lexical near-duplicate candidates in R-011. A card that showed
+precision 1.0 would mean the synthetic world was too easy to mean anything.
+
+## D-021 · 2026-07-27 · The report card is the regression detector
+A test removes the only rule designed for a class and asserts the card
+drives that class's pooled recall to 0 with an exception outcome, while
+intact classes stay caught (same discipline as the toolkit's planted-drift
+validation, D-022/D-023 there: a detector that never fires would pass every
+happy-path test).
