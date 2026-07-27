@@ -1,0 +1,18 @@
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# local secrets (no keys should ever be needed, but belt and braces)
+.env
+.env*.local
+
+# generated ledgers and runs (examples/ stays committed)
+/runs/
+/generated/
+*.db
+*.db-wal
+*.db-shm
+
+# os
+.DS_Store
