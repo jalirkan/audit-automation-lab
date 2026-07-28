@@ -1,6 +1,6 @@
 # Audit Automation Lab
 
-The mirror image of [ai-audit-toolkit](../ai-audit-toolkit): that project audits
+The mirror image of [ai-audit-toolkit](https://github.com/jalirkan/ai-audit-toolkit): that project audits
 AI systems; this one is AI-era tooling that *performs* audit procedures.
 Full-population journal-entry testing, classical audit analytics, and generated
 workpapers — demonstrated entirely on synthetic data, and graded against
