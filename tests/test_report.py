@@ -1,9 +1,12 @@
 import unittest
+from datetime import date
 
 from analytics.benford import benford_for_ledger
 from analytics.profile import PopulationProfile
+from continuous.aging import age_exceptions, flatten_flags
 from ledger.anomalies import default_plan, generate_with_anomalies
-from ledger.generate import GeneratorConfig
+from ledger.drift import default_drift_plan, generate_with_drift
+from ledger.generate import GeneratorConfig, generate
 from report.document import Document, Paragraph, Table
 from report.language import (
     ProhibitedLanguageError,
@@ -12,6 +15,8 @@ from report.language import (
 )
 from report.renderers import render_html, render_markdown
 from report.workpapers import (
+    build_continuous_pack,
+    build_drift_workpaper,
     build_report_card_document,
     build_rule_workpaper,
     build_sampling_workpaper,
@@ -19,8 +24,9 @@ from report.workpapers import (
 )
 from reportcard.grade import build_report_card
 from rules.base import REFERENCES, Flag
+from rules.drift import ProfileDriftRule
 from rules.library import ShortDescriptionRule
-from rules.registry import evaluate_all
+from rules.registry import default_rules, evaluate_all
 from sampling.attribute import attribute_sample_size, evaluate_attribute_sample
 
 
@@ -111,6 +117,69 @@ class RenderedPackTests(unittest.TestCase):
 
     def test_rendering_is_deterministic(self):
         for name, doc in self.docs.items():
+            self.assertEqual(render_markdown(doc), self.md[name], name)
+            self.assertEqual(render_html(doc), self.html[name], name)
+
+
+class ContinuousPackTests(unittest.TestCase):
+    """The continuous-mode workpapers pass the same boundary guards as the
+    rest of the pack: no conclusory language, no rate without its n, no
+    network in the HTML."""
+
+    @classmethod
+    def setUpClass(cls):
+        cfg = GeneratorConfig(seed=511, n_entries=2400)
+        cls.led, cls.man = generate_with_drift(cfg, default_drift_plan())
+        cls.rule = ProfileDriftRule()
+        cls.report = cls.rule.analyze(cls.led)
+        results = evaluate_all(cls.led, rules=default_rules() + [cls.rule])
+        cls.schedule = age_exceptions(flatten_flags(results), cls.led)
+        cls.pack = build_continuous_pack(
+            cls.led, cls.rule, cls.report, cls.schedule
+        )
+        cls.md = {n: render_markdown(d) for n, d in cls.pack.items()}
+        cls.html = {n: render_html(d) for n, d in cls.pack.items()}
+
+    def test_pack_contents(self):
+        self.assertEqual(sorted(self.pack), ["wp-aging", "wp-drift"])
+
+    def test_guards_pass(self):
+        for name, text in list(self.md.items()) + list(self.html.items()):
+            self.assertEqual(find_prohibited(text), [], name)
+            self.assertEqual(find_bare_rates(text), [], name)
+        for name, html in self.html.items():
+            for banned in ("http://", "https://", "<script", "<link"):
+                self.assertNotIn(banned, html, name)
+
+    def test_drift_workpaper_shows_the_cell_framing_and_its_ceiling(self):
+        md = self.md["wp-drift"]
+        for section in ("Population", "Procedure and criterion", "Results",
+                        "Limitations", "Conclusion (as lead)"):
+            self.assertIn(section, md)
+        self.assertIn("Baseline periods", md)
+        self.assertIn("not an entry", md)          # the cell framing
+        self.assertIn("leads for auditor follow-up", md)
+        self.assertIn("wilson", md)
+
+    def test_aging_workpaper_refuses_to_call_itself_an_open_items_list(self):
+        md = self.md["wp-aging"]
+        self.assertIn("not an open-items list", md)
+        self.assertIn("Aging profile", md)
+        self.assertIn("Aging by rule", md)
+
+    def test_refusal_renders_as_inconclusive_not_as_no_drift(self):
+        short = generate(GeneratorConfig(seed=3, n_entries=200,
+                                         start=date(2025, 1, 1),
+                                         end=date(2025, 2, 28)))
+        rule = ProfileDriftRule()
+        md = render_markdown(
+            build_drift_workpaper(rule, rule.analyze(short), short)
+        )
+        self.assertIn("Outcome: inconclusive", md)
+        self.assertNotIn("Outcome: pass", md)
+
+    def test_rendering_is_deterministic(self):
+        for name, doc in self.pack.items():
             self.assertEqual(render_markdown(doc), self.md[name], name)
             self.assertEqual(render_html(doc), self.html[name], name)
 

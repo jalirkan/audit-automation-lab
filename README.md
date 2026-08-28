@@ -14,7 +14,7 @@ So every analytic here ships with a report card: synthetic ledgers with known
 planted anomalies, and the recall/precision the engine actually achieved
 against them, with confidence intervals.
 
-## What it does (v1 complete — phases 0-6 of PLAN.md)
+## What it does (v1 complete — phases 0-6 of PLAN.md, plus continuous mode)
 
 - **Synthetic ledger generator** (`ledger/`) — deterministic, seeded general
   ledgers: seasonality, approval workflow, per-class amount distributions,
@@ -43,11 +43,18 @@ against them, with confidence intervals.
   card rendered alongside; Markdown + self-contained HTML. A renderer-level
   guard refuses conclusory language, and a scanner rejects any percentage
   that appears without its sample size.
+- **Continuous mode** (`continuous/`) — the same discipline applied to
+  monitoring: monthly batches (a batch is just a smaller ledger), a
+  population-profile drift screen against a baseline period, and an
+  exception aging schedule. Drift is a rule like any other (R-012, in its
+  own battery) and is graded by the same report card against *planted*
+  drift — composition shifts injected into known months, with the entries
+  that constitute the shift as the ground truth.
 
 ## Quick start
 
 ```
-python -m unittest discover -s tests -t .   # 186 tests, ~15 seconds
+python -m unittest discover -s tests -t .   # 259 tests, ~5 seconds
 python cli.py example                        # regenerate examples/run-001 end to end
 ```
 
@@ -63,8 +70,37 @@ by the period-end and below-threshold screens, whose yield is a review
 population by design. The per-rule table shows exactly which screen buys
 its recall at what false-positive cost.
 
-Other commands: `generate`, `test`, `report`, `reportcard`, `sample-size`
-(see `python cli.py --help`).
+Other commands: `generate`, `test`, `report`, `reportcard`, `sample-size`,
+`continuous`, `continuous-card` (see `python cli.py --help`).
+
+## Continuous mode
+
+```
+python cli.py generate --plan none --drift-plan default --entries 2400 \
+    --seed 511 --out runs/cont      # a ledger with planted profile drift
+python cli.py continuous --ledger runs/cont --out runs/cont
+python cli.py continuous-card --out runs/cont   # grade the screen
+```
+
+A drift finding needs two gates: an absolute share shift past a materiality
+floor **and** non-overlapping Wilson intervals. Either alone is a bad
+detector — significance without materiality just reports whatever a large n
+makes detectable (the D-016 lesson again), and materiality without the
+interval reports what the data cannot support. The floor's default is
+calibrated against measured clean behaviour, not taste: over 40 clean seeds
+it fires on 5 of 3,834 cells at ~100 entries a month and on 0 of 3,960 at
+~200, and DECISIONS D-028 records the whole table including where it is
+*not* silent.
+
+Measured against planted drift (seeds 501-503, 2,400-entry ledgers): both
+drift classes detected 6/6 — reported as *inconclusive*, because six
+instances cannot demonstrate a 0.9 floor — with battery precision 0.66
+(95% Wilson 0.63-0.68, n=1068) and 530 false positives per 10k clean
+entries. That precision has a structural ceiling and the workpaper says so:
+the screen concludes about a period-and-category cell, so it names the whole
+cell as leads, long-standing members included. The aging schedule is
+likewise careful about what it is not — with no disposition data in the lab,
+it reports elapsed periods, never "open items".
 
 ## Principles
 

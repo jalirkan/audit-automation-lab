@@ -3,8 +3,16 @@
 The battery is data-driven and explicit (suite files arrive with the CLI,
 per toolkit D-019's suites-as-data discipline); a typo'd rule id fails
 immediately with the list of valid ids.
+
+Two batteries, not one. `default_rules()` is the point-in-time
+journal-entry battery: eleven rules that examine one extract. The
+continuous battery is separate because its rules need several monthly
+batches and a baseline period to mean anything, and because a report card
+must grade a battery against the classes that battery was designed for
+(DECISIONS D-030). Both are reachable by id through `build_rules`.
 """
 
+from rules.drift import ProfileDriftRule
 from rules.library import (
     BelowThresholdRule,
     DormantAccountRule,
@@ -33,15 +41,35 @@ _RULE_CLASSES = (
     NearDuplicateRule,
 )
 
+_CONTINUOUS_RULE_CLASSES = (ProfileDriftRule,)
+
 
 def default_rules() -> list:
-    """The full battery with default parameters, ordered by rule id."""
+    """The point-in-time battery with default parameters, ordered by id."""
     rules = [cls() for cls in _RULE_CLASSES]
     return sorted(rules, key=lambda r: r.rule_id)
 
 
+def continuous_rules() -> list:
+    """The continuous-mode battery: rules that read a ledger as a sequence
+    of monthly batches against a baseline period.
+
+    Kept apart from `default_rules()` on purpose. Grading drift with the
+    point-in-time battery mixed in would let an unrelated screen — a
+    period-end selection sweeping a December plant, say — claim a drift
+    detection it did nothing to earn, and the report card's recall would
+    stop being a statement about the drift screen (DECISIONS D-030).
+    """
+    rules = [cls() for cls in _CONTINUOUS_RULE_CLASSES]
+    return sorted(rules, key=lambda r: r.rule_id)
+
+
 def rule_class_by_id() -> dict:
-    return {cls.rule_id: cls for cls in _RULE_CLASSES}
+    """Every rule in either battery, by id — so a subset can be built by id
+    without knowing which battery a rule belongs to."""
+    return {
+        cls.rule_id: cls for cls in _RULE_CLASSES + _CONTINUOUS_RULE_CLASSES
+    }
 
 
 def build_rules(rule_ids=None) -> list:

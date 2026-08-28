@@ -256,3 +256,90 @@ timestamps (D-019): identity is fiscal year, seeds, generator version.
 Findings and scope limitations are listed separately on the lead sheet
 (toolkit D-032): an inapplicable procedure renders as inconclusive with its
 reason, never silently among passes.
+
+## D-027 · 2026-08-28 · Continuous mode batches on posting date; a batch is a sub-ledger
+Monthly batching uses the **posting** date, not the effective date. A
+monitor sees an entry when it hits the ledger, and the lag between the two
+dates is the signal R-002 exists to notice: batching on the effective date
+would file a January-posted, December-effective entry into December and
+hide exactly the thing worth seeing. `JournalEntry.period` keeps its
+effective-date meaning — the two are different questions, so the batcher
+names its basis rather than reusing that property. A batch is not a new
+type: it is a `Ledger` over a subset of entries with the parent's chart,
+users and metadata, so every existing rule, the profiler and the report
+card operate on a batch with no special case. The slice annotates its own
+meta (`batch.parent_n_entries`) so a batch workpaper cannot claim the
+parent's size, and batching is asserted to be a pure partition —
+concatenating the batches in period order reproduces the parent exactly.
+
+## D-028 · 2026-08-28 · Drift needs two gates, and the materiality floor is measured
+A drift finding requires **both** an absolute share shift of at least
+`min_shift` and non-overlapping Wilson intervals. Either alone is a bad
+detector, for the two opposite reasons: the interval test alone repeats the
+chi-square problem of D-016 (power grows with n until every wobble is
+"significant"), and the floor alone would report shifts the data cannot
+support. Non-overlap rather than "the baseline point estimate falls outside
+the period interval", because the baseline is itself measured.
+
+The 0.15 default is measured, not chosen for looks. Over 40 clean seeds ×
+9 tested periods × 2 dimensions (≈3,900 cells, no plants anywhere): at
+~100 entries per monthly batch the screen fires 32/3834 cells at a 0.10
+floor, 21/3834 at 0.125, 5/3834 at 0.15 and 0/3834 at 0.20, with the
+largest natural shift observed at 0.193; at ~200 entries per batch,
+4/3960 at 0.10 and 0/3960 from 0.125 up (largest natural shift 0.109); at
+~300 entries per batch, 0/3960 even at 0.10 (largest 0.088). So the honest
+statement is a conditional one: at ~200 entries a month and up the default
+is silent on clean populations, and the committed negative-control test
+pins exactly that; at ~100 a month it is not silent, and the report card's
+false-positive rate is where that cost shows up rather than being tuned
+away. Planted drift is designed 0.22 above its baseline share with a 0.35
+floor, so it clears the gate by design and the card measures whether the
+design holds.
+
+## D-029 · 2026-08-28 · Drift is graded by the same card, and its precision ceiling is published
+Continuous mode did not get its own scorer. `build_report_card` takes the
+planting function as a parameter, and drift is graded by the same pooling,
+the same Wilson intervals, the same interval-vs-target decisions and the
+same definitions as every anomaly class — a new capability scored by its
+own bespoke metric is a claim graded by its author.
+
+Two consequences are stated rather than engineered around. First, ground
+truth is the entries that *constitute* the shift (the reassigned entries,
+the added ones), never the whole drifted cell: counting a cell's
+long-standing members as planted would flatter precision by construction.
+Second, the screen concludes about a cell and names the cell's entries as
+leads, so its entry-level precision is capped by the cell's composition —
+measured at 0.66 (95% Wilson 0.63-0.68, n=1068) across three seeds, which
+is the ceiling doing its work, not a defect. The rule's limitations say so
+in the workpaper, and the card prints the number.
+
+## D-030 · 2026-08-28 · Two batteries, graded apart
+R-012 is not in `default_rules()`. It needs a year of monthly batches and a
+baseline window that a single-period extract does not have, and no
+point-in-time rule targets a drift class. Keeping the batteries separate is
+also what keeps recall meaningful: measured on planted drift, the eleven
+point-in-time rules catch 1/6 and 2/6 instances *incidentally* — a December
+plant meets the period-end screen — so a mixed battery would credit drift
+recall to rules that detected no drift at all. Graded honestly on its own,
+the point-in-time battery takes an exception on every drift class, and that
+is the correct result. Drift classes are likewise kept out of
+`ANOMALY_CLASSES`: folding them into the default plan would book a
+guaranteed zero-recall class onto a card that grades a different battery,
+and would silently rewrite the committed example's ground truth.
+
+## D-031 · 2026-08-28 · Aging reports elapsed time; it is not an open-items schedule
+Exceptions are filed under the monthly batch they first appear in and aged
+in whole periods against a reporting period — the batch is the unit of the
+programme, so an exception in the batch just processed is age 0 whatever
+day it posted. Entries posted after the reporting period are not aged at
+all (a monitor running then has not seen them) and are counted separately
+rather than folded into a bucket. What the schedule cannot say, it says
+instead of implying: this lab has no disposition data — no clearing dates,
+no reviewer sign-off — so *every* exception raised is aged, including any a
+reviewer would already have cleared. Calling the result an open-items list
+would be a claim the data cannot support, and the workpaper opens by
+refusing that name. A companion note for anyone extending this: rules that
+learn from the population they score (R-008, R-011) are different rules on
+a monthly batch than on a year, because the batch is a different
+population; aging therefore consumes the battery's flags over the
+cumulative ledger rather than re-running it per batch.

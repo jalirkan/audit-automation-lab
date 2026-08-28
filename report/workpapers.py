@@ -1,5 +1,6 @@
 """Workpaper builders: per-rule workpapers, Benford workpaper, engagement
-lead sheet, detection report card document, sampling workpaper.
+lead sheet, detection report card document, sampling workpaper, and the
+continuous-mode pair (profile drift, exception aging).
 
 Framing rules enforced here (and by tests over the rendered output):
 - Counts from complete examinations are exact facts and state their
@@ -443,6 +444,189 @@ def build_report_card_document(card) -> Document:
         ),
     ]
     return Document(title="Detection report card", blocks=tuple(blocks))
+
+
+def build_drift_workpaper(rule, report, ledger) -> Document:
+    """Continuous-mode workpaper: profile drift against the baseline period.
+
+    Findings that name no entries (share decreases) and periods that could
+    not be tested both appear here. A monitoring workpaper that showed only
+    the entry-bearing findings would report a quieter population than the
+    one that was examined.
+    """
+    blocks = [
+        _engagement_kv(ledger),
+        Heading("Population"),
+        Paragraph(rule.population_description),
+        Paragraph(
+            f"Batching basis: posting month. Baseline periods: "
+            f"{', '.join(report.baseline_periods) or '(none)'} "
+            f"(n={report.baseline_n_entries} entries). Periods tested "
+            f"against that baseline: "
+            f"{', '.join(report.tested_periods) or '(none)'}."
+        ),
+        Heading("Procedure and criterion"),
+        Paragraph(rule.criterion_description),
+        Paragraph(f"Parameters: {canonical_json(rule.params())}"),
+        Heading("References"),
+        _references_block(rule),
+        Heading("Results"),
+    ]
+
+    if not report.applicable:
+        outcome = "inconclusive"
+        blocks.append(
+            Paragraph(
+                f"Outcome: inconclusive — the procedure refused to run: "
+                f"{report.refusal_reason}. No drift finding is reported, "
+                f"because none would be meaningful."
+            )
+        )
+    elif report.findings:
+        outcome = "exception"
+        n_leads = len({eid for f in report.findings for eid in f.entry_ids})
+        blocks.append(
+            Paragraph(
+                f"Outcome: exception — {len(report.findings)} composition "
+                f"shifts identified across {len(report.tested_periods)} tested "
+                f"periods, naming {n_leads} entries as leads."
+            )
+        )
+        blocks.append(
+            Table(
+                headers=("Period", "Dimension", "Category", "Direction",
+                         "Shift (share points)", "Baseline share",
+                         "Period share", "Entries in cell"),
+                rows=tuple(
+                    (
+                        f.period,
+                        f.dimension.replace("by_", ""),
+                        f.category,
+                        f.direction,
+                        f"{f.shift:+.3f}",
+                        f.baseline_share.render(),
+                        f.period_share.render(),
+                        str(len(f.entry_ids)),
+                    )
+                    for f in report.findings
+                ),
+                caption="Each row is a period-and-category cell, not an "
+                        "entry; the cell's entries are the leads",
+            )
+        )
+    else:
+        outcome = "pass"
+        blocks.append(
+            Paragraph(
+                f"Outcome: pass — no composition shift met the criterion in "
+                f"{len(report.tested_periods)} tested periods measured against "
+                f"a baseline of n={report.baseline_n_entries} entries."
+            )
+        )
+
+    if report.untested:
+        blocks += [
+            Heading("Periods not tested (scope limitations)"),
+            Table(
+                headers=("Period", "Entries", "Reason"),
+                rows=tuple(
+                    (u.period, str(u.n_entries), u.reason) for u in report.untested
+                ),
+            ),
+        ]
+
+    blocks += [
+        Heading("Limitations"),
+        ListBlock(items=tuple(rule.limitations)),
+        Heading("Conclusion (as lead)"),
+        Paragraph(_conclusion_text(outcome, len(report.findings))),
+        Paragraph(LEAD_NOTE),
+    ]
+    return Document(
+        title=f"Workpaper WP-{rule.rule_id} — {rule.title}", blocks=tuple(blocks)
+    )
+
+
+def build_aging_workpaper(schedule, ledger) -> Document:
+    """Continuous-mode workpaper: how long each lead has been outstanding."""
+    bucket_rows = tuple(
+        (b, str(schedule.by_bucket.get(b, 0))) for b in schedule.buckets
+    )
+    rule_rows = tuple(
+        (rid,) + tuple(str(counts.get(b, 0)) for b in schedule.buckets)
+        + (str(sum(counts.values())),)
+        for rid, counts in sorted(schedule.by_rule.items())
+    )
+    oldest_rows = tuple(
+        (a.rule_id, a.entry_id, a.first_seen_period, str(a.age_periods))
+        for a in schedule.oldest()
+    )
+
+    blocks = [
+        _engagement_kv(ledger),
+        Heading("Basis"),
+        Paragraph(
+            f"Exceptions are filed under the monthly batch in which they "
+            f"first appeared and aged in whole periods against the reporting "
+            f"period {schedule.as_of_period}. Counts are exact: "
+            f"{schedule.n_exceptions} exceptions aged, "
+            f"{schedule.n_not_yet_posted} not yet visible as of that period."
+        ),
+        Paragraph(
+            "This schedule is not an open-items list. No disposition record "
+            "exists in this lab — no clearing dates, no reviewer sign-off — "
+            "so every exception raised is aged, including any a reviewer "
+            "would already have cleared. A programme with follow-up records "
+            "would age only the undispositioned ones, and the difference "
+            "matters for anything read off the older buckets."
+        ),
+        Heading("Aging profile"),
+        Table(
+            headers=("Age (periods)", "Exceptions"),
+            rows=bucket_rows,
+            caption=f"Oldest bucket is open-ended; maximum observed age "
+                    f"{schedule.max_age_periods} periods",
+        ),
+    ]
+    if rule_rows:
+        blocks += [
+            Heading("Aging by rule"),
+            Table(
+                headers=("Rule",) + schedule.buckets + ("Total",),
+                rows=rule_rows,
+            ),
+        ]
+    if oldest_rows:
+        blocks += [
+            Heading("Oldest outstanding leads"),
+            Table(
+                headers=("Rule", "Entry", "First seen", "Age (periods)"),
+                rows=oldest_rows,
+                caption=f"Showing up to {len(oldest_rows)} of "
+                        f"{schedule.n_exceptions} aged exceptions",
+            ),
+        ]
+    blocks += [
+        Heading("Conclusion (as lead)"),
+        Paragraph(
+            "An aged exception is a lead that has been available for review "
+            "for the stated number of periods. Age is evidence about the "
+            "monitoring process, not about the entry: an old lead is not a "
+            "worse exception, it is an unworked one."
+        ),
+        Paragraph(LEAD_NOTE),
+    ]
+    return Document(
+        title="Workpaper WP-AGING — Exception aging", blocks=tuple(blocks)
+    )
+
+
+def build_continuous_pack(ledger, drift_rule, drift_report, schedule) -> dict:
+    """name -> Document for a continuous-mode run."""
+    return {
+        "wp-drift": build_drift_workpaper(drift_rule, drift_report, ledger),
+        "wp-aging": build_aging_workpaper(schedule, ledger),
+    }
 
 
 def build_sampling_workpaper(size=None, evaluation=None) -> Document:

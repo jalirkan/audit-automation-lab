@@ -1,14 +1,25 @@
 """Population profiling: deterministic descriptive structure of a ledger.
 
-This is the baseline object the stretch-phase drift comparison would diff;
-in v1 it feeds the workpapers' population sections. Quantiles use the
+This is the baseline object the drift comparison diffs (`continuous.drift`
+does exactly that, one period's profile against a baseline window's); it
+also feeds the workpapers' population sections. Quantiles use the
 nearest-rank method on the (n-1) index scale — pinned here so two runs (and
 two platforms) produce identical integers, with no interpolation floats.
+
+The `by_*` tallies are the composition dimensions drift reads. Most count
+entries (`by_weekday`, `by_month`, `by_source`, `by_preparer`); `by_account`
+counts *lines*, because one entry touches several accounts. That difference
+decides the denominator of any share computed from them, so `dimension()`
+is paired with `dimension_total()` rather than letting callers assume
+n_entries.
 """
 
 from dataclasses import dataclass
 
 from core.dates import period_str
+
+# Composition tallies, in the order they are declared on the dataclass.
+DIMENSIONS = ("by_weekday", "by_month", "by_source", "by_preparer", "by_account")
 
 
 def nearest_rank_deciles(sorted_values):
@@ -94,6 +105,22 @@ class PopulationProfile:
                 for e in ranked
             ),
         )
+
+    def dimension(self, name: str) -> dict:
+        """One composition tally as {category: count}, keys normalised to
+        strings so numeric categories (weekday) and string categories
+        (preparer) can be compared by one generic consumer."""
+        if name not in DIMENSIONS:
+            raise ValueError(
+                f"unknown profile dimension {name!r}; known: {', '.join(DIMENSIONS)}"
+            )
+        return {str(k): v for k, v in getattr(self, name).items()}
+
+    def dimension_total(self, name: str) -> int:
+        """The denominator for shares in `name` — entries for most
+        dimensions, lines for by_account. Summing the tally rather than
+        assuming n_entries keeps that distinction correct by construction."""
+        return sum(self.dimension(name).values())
 
     def to_dict(self) -> dict:
         return {

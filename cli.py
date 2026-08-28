@@ -5,12 +5,14 @@ with the same arguments produces byte-identical output. No network, no
 keys, no clock reads in any artifact.
 
 Commands:
-  generate      synthetic ledger (optionally with planted anomalies)
-  test          run the rule battery over a generated ledger
-  report        full workpaper pack (Markdown + standalone HTML)
-  reportcard    grade the battery against planted truth across seeds
-  sample-size   attribute-sampling math (planning and/or evaluation)
-  example       committed end-to-end run (see examples/run-001)
+  generate         synthetic ledger (optionally with planted anomalies or drift)
+  test             run the rule battery over a generated ledger
+  report           full workpaper pack (Markdown + standalone HTML)
+  reportcard       grade the battery against planted truth across seeds
+  sample-size      attribute-sampling math (planning and/or evaluation)
+  continuous       monthly batches, profile drift, exception aging
+  continuous-card  grade the drift screen against planted drift across seeds
+  example          committed end-to-end run (see examples/run-001)
 """
 
 import argparse
@@ -22,17 +24,23 @@ from pathlib import Path
 
 from analytics.benford import benford_for_ledger
 from analytics.profile import PopulationProfile
+from continuous.aging import age_exceptions, flatten_flags
+from continuous.drift import DriftParams
+from continuous.periods import monthly_batches
 from ledger.anomalies import ANOMALY_CLASSES, Manifest, default_plan, generate_with_anomalies
+from ledger.drift import DRIFT_CLASSES, default_drift_plan, generate_with_drift
 from ledger.generate import GeneratorConfig, generate
 from ledger.model import Ledger
 from report.renderers import render_html, render_markdown
 from report.workpapers import (
+    build_continuous_pack,
     build_report_card_document,
     build_sampling_workpaper,
     build_workpaper_pack,
 )
 from reportcard.grade import Targets, build_report_card
-from rules.registry import evaluate_all
+from rules.drift import ProfileDriftRule
+from rules.registry import continuous_rules, default_rules, evaluate_all
 from sampling.attribute import attribute_sample_size, evaluate_attribute_sample
 
 EXAMPLE_SEED = 20260401
@@ -78,6 +86,17 @@ def _parse_plan(text: str) -> dict:
     return plan
 
 
+def _parse_drift_plan(text: str) -> dict:
+    if text == "default":
+        return default_drift_plan()
+    if text == "none":
+        return {}
+    plan = json.loads(text)
+    if not isinstance(plan, dict):
+        raise ValueError("drift plan must be a JSON object of class -> count")
+    return plan
+
+
 def _battery_json(ledger, results) -> dict:
     return {
         "ledger_meta": ledger.meta,
@@ -103,7 +122,24 @@ def cmd_generate(args) -> int:
     )
     out = Path(args.out)
     plan = _parse_plan(args.plan)
-    if plan:
+    drift_plan = _parse_drift_plan(args.drift_plan)
+    if drift_plan and plan:
+        # The two injectors each rebuild the same raw population; running
+        # both would leave each one's manifest describing a population the
+        # other had already moved. Refuse rather than silently compose.
+        print(
+            "--drift-plan plants population drift instead of point-in-time "
+            "anomalies; pass --plan none alongside it",
+            file=sys.stderr,
+        )
+        return 2
+    if drift_plan:
+        ledger, manifest = generate_with_drift(
+            cfg, drift_plan, anomaly_seed=args.anomaly_seed
+        )
+        _write_json(out / "manifest.json", manifest.to_dict())
+        plan = drift_plan
+    elif plan:
         ledger, manifest = generate_with_anomalies(
             cfg, plan, anomaly_seed=args.anomaly_seed
         )
@@ -112,7 +148,8 @@ def cmd_generate(args) -> int:
         ledger = generate(cfg)
     _write_json_compact(out / "ledger.json", ledger.to_dict())
     _write_text(out / "ledger.csv", ledger.entries_csv())
-    planted = f", {len(plan)} anomaly classes planted" if plan else ""
+    kind = "drift classes" if drift_plan else "anomaly classes"
+    planted = f", {len(plan)} {kind} planted" if plan else ""
     print(f"wrote {len(ledger)} entries to {out}{planted}")
     return 0
 
@@ -165,6 +202,95 @@ def cmd_reportcard(args) -> int:
           f"{card.precision_decision.outcome}")
     print(f"fp rate:   {card.pooled_fp_rate.render()} -> {card.fp_decision.outcome}")
     print(f"wrote report card to {out}")
+    return 0
+
+
+def cmd_continuous(args) -> int:
+    """Continuous mode over an existing ledger: monthly batches, profile
+    drift against the baseline periods, and the aging of every exception the
+    battery raises."""
+    ledger = _load_ledger(Path(args.ledger))
+    out = Path(args.out)
+    rule = ProfileDriftRule(
+        DriftParams(
+            baseline_periods=args.baseline_periods,
+            min_shift=args.min_shift,
+        )
+    )
+    report = rule.analyze(ledger)
+    batches = monthly_batches(ledger)
+
+    # Aging covers the whole monitoring battery, not just drift: a
+    # programme ages every lead it raises. (Grading is the opposite case —
+    # there the batteries stay apart, see rules.registry.)
+    results = evaluate_all(ledger, rules=default_rules() + [rule])
+    schedule = age_exceptions(
+        flatten_flags(results), ledger, as_of_period=args.as_of
+    )
+
+    _write_json(out / "drift.json", report.to_dict())
+    _write_json(out / "aging.json", schedule.to_dict())
+    _write_json(
+        out / "batches.json",
+        {
+            "period_basis": "posting_date",
+            "batches": [b.to_dict() for b in batches],
+        },
+    )
+    pack = build_continuous_pack(ledger, rule, report, schedule)
+    for name, doc in sorted(pack.items()):
+        _write_text(out / "workpapers" / f"{name}.md", render_markdown(doc))
+        _write_text(out / "workpapers" / f"{name}.html", render_html(doc))
+
+    print(
+        f"{len(batches)} monthly batches from {batches[0].period} to "
+        f"{batches[-1].period}"
+    )
+    if not report.applicable:
+        print(f"drift: inconclusive — {report.refusal_reason}")
+    else:
+        print(f"drift: baseline {', '.join(report.baseline_periods)} "
+              f"(n={report.baseline_n_entries}); "
+              f"{len(report.findings)} findings over "
+              f"{len(report.tested_periods)} tested periods")
+        for f in report.findings:
+            print(f"  {f.statement}")
+    print(f"aging as of {schedule.as_of_period}: "
+          f"{schedule.n_exceptions} exceptions, by age "
+          f"{schedule.to_dict()['by_bucket']}")
+    print(f"wrote continuous-mode outputs to {out}")
+    return 0
+
+
+def cmd_continuous_card(args) -> int:
+    """Grade the drift screen against planted drift — the same report card,
+    a different battery and a different planted truth."""
+    cfg = GeneratorConfig(seed=0, n_entries=args.entries)
+    seeds = tuple(int(s) for s in args.seeds.split(","))
+    plan = _parse_drift_plan(args.plan)
+    if not plan:
+        print("a non-empty drift plan is required to grade the drift screen",
+              file=sys.stderr)
+        return 2
+    card = build_report_card(
+        cfg,
+        plan=plan,
+        seeds=seeds,
+        targets=Targets(),
+        rules=continuous_rules(),
+        generate=generate_with_drift,
+    )
+    out = Path(args.out)
+    _write_json(out / "continuous-report-card.json", card.to_dict())
+    doc = build_report_card_document(card)
+    _write_text(out / "continuous-report-card.md", render_markdown(doc))
+    _write_text(out / "continuous-report-card.html", render_html(doc))
+    for c in card.pooled_classes:
+        print(f"  {c.anomaly_class}: {c.recall.render()} -> {c.decision.outcome}")
+    print(f"precision: {card.pooled_precision.render()} -> "
+          f"{card.precision_decision.outcome}")
+    print(f"fp rate:   {card.pooled_fp_rate.render()} -> {card.fp_decision.outcome}")
+    print(f"wrote continuous report card to {out}")
     return 0
 
 
@@ -349,6 +475,11 @@ def build_parser() -> argparse.ArgumentParser:
     g.add_argument("--end", default="2025-12-31")
     g.add_argument("--plan", default="default",
                    help="'default', 'none', or JSON {class: count}")
+    g.add_argument("--drift-plan", default="none",
+                   help=f"plant population drift instead of point-in-time "
+                        f"anomalies: 'default', 'none', or JSON "
+                        f"{{class: count}} over {', '.join(DRIFT_CLASSES)} "
+                        f"(requires --plan none)")
     g.add_argument("--anomaly-seed", type=int, default=None)
     g.add_argument("--out", required=True)
     g.set_defaults(func=cmd_generate)
@@ -370,6 +501,33 @@ def build_parser() -> argparse.ArgumentParser:
     c.add_argument("--plan", default="default")
     c.add_argument("--out", required=True)
     c.set_defaults(func=cmd_reportcard)
+
+    cont = sub.add_parser(
+        "continuous",
+        help="monthly batches, profile drift vs baseline, exception aging",
+    )
+    cont.add_argument("--ledger", required=True,
+                      help="ledger.json or a directory containing it")
+    cont.add_argument("--out", required=True)
+    cont.add_argument("--baseline-periods", type=int,
+                      default=DriftParams().baseline_periods)
+    cont.add_argument("--min-shift", type=float, default=DriftParams().min_shift,
+                      help="materiality floor in absolute share points")
+    cont.add_argument("--as-of", default=None,
+                      help="reporting period YYYY-MM for aging "
+                           "(default: the ledger's last period)")
+    cont.set_defaults(func=cmd_continuous)
+
+    cc = sub.add_parser(
+        "continuous-card",
+        help="grade the drift screen against planted drift across seeds",
+    )
+    cc.add_argument("--entries", type=int, default=2400)
+    cc.add_argument("--seeds", default="501,502,503")
+    cc.add_argument("--plan", default="default",
+                    help="'default' or JSON {drift class: count}")
+    cc.add_argument("--out", required=True)
+    cc.set_defaults(func=cmd_continuous_card)
 
     s = sub.add_parser("sample-size", help="attribute sampling math")
     s.add_argument("--tolerable", type=float, required=True)
