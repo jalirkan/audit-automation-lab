@@ -196,6 +196,35 @@ sample *of a stratum* supports; a full-population screen is never recast
 as a statistical sample after the fact (toolkit D-031's lesson applied to
 sampling).
 
+## D-023 · 2026-07-27 · Exact counts state their n; intervals attach to inference
+A rule battery is a census: 12 flags in 1,226 entries is a fact about this
+ledger, not an estimate, and wrapping it in a Wilson interval would claim
+sampling error that does not exist (toolkit D-031's distinction). So
+workpapers report examination counts exactly, always with the population on
+the same line, while intervals are mandatory wherever a number *is* an
+inference — report-card rates (about the detection process across seeds),
+Benford digit proportions (about the amount-generating process), and
+sampling bounds. The rendered-output test enforces the line rule: any
+numeric percentage must share its line with an n= or a k/n fraction, and a
+companion test proves the scanner fires on a planted bare rate (toolkit
+D-030 discipline). While building this, the scanner flagged the HTML
+renderer's own stylesheet (width: 100%) — the CSS was changed rather than
+the scanner weakened.
+
+## D-024 · 2026-07-27 · One document model, two renderers, guards at the boundary
+Per toolkit D-029: Markdown and standalone HTML render from one block
+structure, so the formats cannot drift; the HTML embeds its CSS and fetches
+nothing (tested: no http://, https://, <script, <link). Conclusory language
+is refused *by the renderer* — not by convention — with a prohibited-phrase
+list that bans conclusory collocations ("fraud detected", "is fraudulent",
+"guilty") while leaving legitimate standard references ("the auditor's
+consideration of fraud") renderable; companion tests prove the guard fires
+in paragraphs and inside table cells. Workpapers carry no wall-clock
+timestamps (D-019): identity is fiscal year, seeds, generator version.
+Findings and scope limitations are listed separately on the lead sheet
+(toolkit D-032): an inapplicable procedure renders as inconclusive with its
+reason, never silently among passes.
+
 ## D-025 · 2026-07-27 · Pair screens are density-dependent; R-011 keys on references
 Found by the 100k example, not by unit tests: the similarity-based
 near-duplicate screen produced 5,328 flags at ledger scale — templated
@@ -228,34 +257,7 @@ with indent, json.dumps falls back to the pure-Python encoder and turns a
 100 MB ledger into minutes of serialization. Caveat recorded: per-platform
 determinism is tested; cross-platform identity additionally assumes libm
 rounds transcendentals identically (lognormal draws), which the
-regeneration test would surface as a mismatch worth a human look. · 2026-07-27 · Exact counts state their n; intervals attach to inference
-A rule battery is a census: 12 flags in 1,226 entries is a fact about this
-ledger, not an estimate, and wrapping it in a Wilson interval would claim
-sampling error that does not exist (toolkit D-031's distinction). So
-workpapers report examination counts exactly, always with the population on
-the same line, while intervals are mandatory wherever a number *is* an
-inference — report-card rates (about the detection process across seeds),
-Benford digit proportions (about the amount-generating process), and
-sampling bounds. The rendered-output test enforces the line rule: any
-numeric percentage must share its line with an n= or a k/n fraction, and a
-companion test proves the scanner fires on a planted bare rate (toolkit
-D-030 discipline). While building this, the scanner flagged the HTML
-renderer's own stylesheet (width: 100%) — the CSS was changed rather than
-the scanner weakened.
-
-## D-024 · 2026-07-27 · One document model, two renderers, guards at the boundary
-Per toolkit D-029: Markdown and standalone HTML render from one block
-structure, so the formats cannot drift; the HTML embeds its CSS and fetches
-nothing (tested: no http://, https://, <script, <link). Conclusory language
-is refused *by the renderer* — not by convention — with a prohibited-phrase
-list that bans conclusory collocations ("fraud detected", "is fraudulent",
-"guilty") while leaving legitimate standard references ("the auditor's
-consideration of fraud") renderable; companion tests prove the guard fires
-in paragraphs and inside table cells. Workpapers carry no wall-clock
-timestamps (D-019): identity is fiscal year, seeds, generator version.
-Findings and scope limitations are listed separately on the lead sheet
-(toolkit D-032): an inapplicable procedure renders as inconclusive with its
-reason, never silently among passes.
+regeneration test would surface as a mismatch worth a human look.
 
 ## D-027 · 2026-08-28 · Continuous mode batches on posting date; a batch is a sub-ledger
 Monthly batching uses the **posting** date, not the effective date. A
