@@ -25,17 +25,17 @@
 
 | Rule | Title | Population | Exceptions | Outcome |
 |---|---|---|---|---|
-| R-001 | Unbalanced journal entries | 100051 | 4/100051 (0.00%) | exception |
-| R-002 | Entries at or after fiscal year end | 100051 | 1523/100051 (1.52%) | exception |
-| R-003 | Weekend and holiday postings | 100051 | 10/100051 (0.01%) | exception |
-| R-004 | Large exact round-dollar entries | 57996 | 16/57996 (0.03%) | exception |
-| R-005 | Amounts just below the approval threshold | 95724 | 559/95724 (0.58%) | exception |
-| R-006 | Missing or uninformative descriptions | 100051 | 4/100051 (0.00%) | exception |
-| R-007 | Postings to dormant accounts | 100051 | 4/100051 (0.00%) | exception |
-| R-008 | Unusual account pairings | 100051 | 5/100051 (0.00%) | exception |
-| R-009 | Approval segregation of duties | 16862 | 4/16862 (0.02%) | exception |
-| R-010 | Duplicate entries | 100051 | 32/100051 (0.03%) | exception |
-| R-011 | Near-duplicate entries (shifted resubmissions) | 100051 | 95/100051 (0.09%) | exception |
+| R-001 | Unbalanced journal entries | 100051 | 4/100051 | exception |
+| R-002 | Entries at or after fiscal year end | 100051 | 1523/100051 | exception |
+| R-003 | Weekend and holiday postings | 100051 | 10/100051 | exception |
+| R-004 | Large exact round-dollar entries | 57996 | 16/57996 | exception |
+| R-005 | Amounts just below the approval threshold | 95724 | 559/95724 | exception |
+| R-006 | Missing or uninformative descriptions | 100051 | 4/100051 | exception |
+| R-007 | Postings to dormant accounts | 100051 | 4/100051 | exception |
+| R-008 | Unusual account pairings | 100051 | 5/100051 | exception |
+| R-009 | Approval segregation of duties | 16862 | 4/16862 | exception |
+| R-010 | Duplicate entries | 100051 | 32/100051 | exception |
+| R-011 | Near-duplicate entries (shifted resubmissions) | 100051 | 95/100051 | exception |
 
 ## Digit conformity
 

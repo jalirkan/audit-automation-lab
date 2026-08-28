@@ -23,7 +23,7 @@ th { background: #efefef; }
 <h1>Workpaper WP-R-007 — Postings to dormant accounts</h1>
 <table class="kv"><tr><td>Engagement</td><td>Synthetic ledger laboratory (all data generated; no client data exists in this repository)</td></tr><tr><td>Fiscal year</td><td>2025-01-01 to 2025-12-31</td></tr><tr><td>Generator</td><td>version 1, seed 20260401</td></tr><tr><td>Ledger size</td><td>100051 journal entries</td></tr><tr><td>Approval threshold</td><td>10000.00</td></tr></table>
 <h2>Population</h2>
-<p>All journal entry lines.</p>
+<p>All journal entries (postings examined line by line).</p>
 <p>Entries examined: 100051 of 100051 in the ledger — a complete examination of the defined population, not a sample; counts below are exact (n=100051).</p>
 <h2>Procedure and criterion</h2>
 <p>A line posts to an account flagged inactive in the chart of accounts, or to an account whose most recent prior activity (in-ledger or declared) is more than the dormancy window before the posting date.</p>
@@ -31,7 +31,7 @@ th { background: #efefef; }
 <h2>References</h2>
 <ul><li>AU-C 240 — US GAAS standard on the auditor&#x27;s consideration of fraud; directs testing of journal entries with emphasis on period-end and unusual items (original summary).</li></ul>
 <h2>Results</h2>
-<p>Outcome: exception — 4 of 100051 entries flagged (0.00% of the population; complete examination, n=100051).</p>
+<p>Outcome: exception — 4 of 100051 entries flagged; complete examination of the defined population, n=100051.</p>
 <table><caption>Exceptions with per-entry rationale</caption><tr><th>Entry</th><th>Posted</th><th>Amount</th><th>Preparer</th><th>Rationale</th></tr><tr><td>JE-009584</td><td>2025-02-07</td><td>6403.79</td><td>P-06</td><td>First posting after dormancy: account 2150 (Legacy marketing accrual) is marked inactive; no activity in account 2150 since 2021-12-31 (1134 days)</td></tr><tr><td>JE-011780</td><td>2025-02-19</td><td>5990.18</td><td>P-01</td><td>First posting after dormancy: account 4500 (Revenue — discontinued product line) is marked inactive; no activity in account 4500 since 2023-03-31 (691 days)</td></tr><tr><td>JE-015861</td><td>2025-03-03</td><td>6059.35</td><td>P-03</td><td>First posting after dormancy: account 1550 (Legacy equipment — retired line) is marked inactive; no activity in account 1550 since 2022-06-30 (977 days)</td></tr><tr><td>JE-084339</td><td>2025-11-13</td><td>6015.61</td><td>P-06</td><td>First posting after dormancy: account 4500 (Revenue — discontinued product line) is marked inactive</td></tr></table>
 <h2>Limitations</h2>
 <ul><li>Dormancy is judged against declared account history plus activity inside this ledger only; activity outside the extract is invisible.</li></ul>
