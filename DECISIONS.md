@@ -343,3 +343,20 @@ learn from the population they score (R-008, R-011) are different rules on
 a monthly batch than on a year, because the batch is a different
 population; aging therefore consumes the battery's flags over the
 cumulative ledger rather than re-running it per batch.
+
+## D-032 · 2026-08-28 · The verification runs where it can be checked
+Until now every green run of the suite was somebody's local shell: a claim
+with no evidence attached, in a repo whose whole argument is that detection
+claims need evidence. CI runs the two documented commands unchanged —
+`python -m unittest discover -s tests -t .` and `python cli.py example` —
+and adds nothing of its own to make them pass. Three choices worth
+recording. The suite runs across 3.10-3.13 because pyproject declares
+`>=3.10`; the declared floor should be tested rather than assumed, and it
+is where D-007's "stable across platforms and versions" claim about the
+string-seeded streams stops being an assertion. The example job regenerates
+the whole committed pack and diffs it against the tree (D-026's
+non-divergence rule, applied to more than the manifest), pinned to one
+interpreter so a red build means the generator changed and not that a
+second libm rounded a lognormal draw differently. And there is no install
+step: stdlib-only and offline are checkable properties, so the workflow is
+built to fail if either stops being true rather than to describe them.
