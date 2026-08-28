@@ -353,7 +353,15 @@ class DormantAccountRule(Rule):
     title = "Postings to dormant accounts"
     targets = ("dormant_reactivation",)
     references = ("AU-C 240",)
-    population_description = "All journal entry lines."
+    # The population is journal ENTRIES, which is what `population()` returns
+    # and what `population_size` counts. This said "All journal entry lines."
+    # while reporting a size of 100,051 — the entry count, against a ledger of
+    # 200,128 lines — so a reader dividing findings by the stated population
+    # computed a per-line rate on an entry denominator, wrong by nearly a factor
+    # of two. The criterion below stays line-wise, because that is the test
+    # applied within each entry; the shape follows R-008's, which already names
+    # what it examines inside the parentheses.
+    population_description = "All journal entries (postings examined line by line)."
     criterion_description = (
         "A line posts to an account flagged inactive in the chart of "
         "accounts, or to an account whose most recent prior activity "

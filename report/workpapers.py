@@ -100,12 +100,23 @@ def build_rule_workpaper(res: dict, ledger) -> Document:
         )
     elif flags:
         outcome = "exception"
-        share = len(flags) / pop
+        # A count and a denominator, no rate.
+        #
+        # This used to read "({share:.2%} of the population…)", and for four of
+        # the eleven rules that prints "0.00%" — 4 of 100,051 is 0.004%, and two
+        # decimals eat it. The figure a reader's eye lands on said the rule
+        # found nothing, immediately beside a heading that says exception. Both
+        # numbers were present and both correct; a true fact can still mislead
+        # at the wrong size, next to the wrong neighbour.
+        #
+        # Reported by the assurance-suite reviewer, which quotes this sentence
+        # verbatim and may not recompute it (its D-028: engine prose is carried
+        # as attributed speech). Four of its records carry open challenges on it.
+        # `itgc-lab` already writes the shape adopted here.
         blocks.append(
             Paragraph(
-                f"Outcome: exception — {len(flags)} of {pop} entries flagged "
-                f"({share:.2%} of the population; complete examination, "
-                f"n={pop})."
+                f"Outcome: exception — {len(flags)} of {pop} entries flagged; "
+                f"complete examination of the defined population, n={pop}."
             )
         )
         rows = []
@@ -247,7 +258,10 @@ def build_lead_sheet(ledger, results: dict, benford_results: dict, profile) -> D
         elif res["flags"]:
             outcome = "exception"
             k, pop = len(res["flags"]), res["population_size"]
-            yield_cell = f"{k}/{pop} ({k / pop:.2%})"
+            # Count and denominator, no rate — the same reason as the workpaper
+            # sentence above. This cell printed "4/100051 (0.00%)" for four of
+            # the eleven rules, on the page a reader meets first.
+            yield_cell = f"{k}/{pop}"
             all_flagged |= {f.entry_id for f in res["flags"]}
         else:
             outcome = "pass"
