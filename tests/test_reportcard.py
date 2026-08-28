@@ -7,7 +7,7 @@ from ledger.anomalies import Manifest, PlantedAnomaly, default_plan
 from ledger.generate import GeneratorConfig
 from reportcard.grade import Targets, build_report_card, grade_run
 from rules.base import Flag, Rule
-from rules.registry import build_rules
+from rules.registry import build_rules, default_rules
 from tests.test_rules import mk_entry, mk_ledger
 
 
@@ -147,6 +147,26 @@ class ReportCardTests(unittest.TestCase):
         self.assertIn("pooled_fp_per_10k", d)
         canonical_bytes(d)
 
+    def test_designed_rules_carry_the_design_link(self):
+        """The class -> rule design link reaches the artifact: every pooled
+        class names the rules whose `targets` include it, sorted, and the
+        many-to-many case survives (late_round_dollar is targeted by both
+        R-002 and R-004)."""
+        by_class = {c.anomaly_class: c for c in self.card.pooled_classes}
+        expected = {}
+        for rule in default_rules():
+            for cls in rule.targets:
+                expected.setdefault(cls, set()).add(rule.rule_id)
+        for cls, pooled in by_class.items():
+            self.assertEqual(
+                list(pooled.designed_rules), sorted(expected.get(cls, set())), cls
+            )
+            self.assertEqual(
+                pooled.to_dict()["designed_rules"], list(pooled.designed_rules)
+            )
+        self.assertIn("R-002", by_class["late_round_dollar"].designed_rules)
+        self.assertIn("R-004", by_class["late_round_dollar"].designed_rules)
+
     def test_seed_validation(self):
         with self.assertRaises(ValueError):
             build_report_card(CFG, seeds=())
@@ -171,6 +191,9 @@ class BrokenRuleRegressionTests(unittest.TestCase):
         broken = by_class["self_approval"]
         self.assertEqual(broken.n_detected, 0)
         self.assertEqual(broken.decision.outcome, OUTCOME_EXCEPTION)
+        # designed_rules reflects the battery actually graded, not the default:
+        # with R-009 removed, no rule is designed for self_approval.
+        self.assertEqual(broken.designed_rules, ())
         # Classes with intact designed rules are unaffected.
         self.assertEqual(
             by_class["unbalanced_entry"].n_detected,

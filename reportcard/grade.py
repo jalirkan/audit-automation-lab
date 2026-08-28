@@ -248,10 +248,15 @@ class PooledClass:
     per_seed: dict     # seed -> "k/n"
     recall_min: float
     recall_max: float
+    # The rules whose `targets` name this class — the design link, as designed,
+    # not which rules happened to catch instances this run. That distinction is
+    # why this is not derived from class_grades[].caught_by.
+    designed_rules: tuple = ()
 
     def to_dict(self) -> dict:
         return {
             "anomaly_class": self.anomaly_class,
+            "designed_rules": list(self.designed_rules),
             "n_planted": self.n_planted,
             "n_detected": self.n_detected,
             "recall": self.recall.to_dict(),
@@ -322,11 +327,16 @@ def build_report_card(
         raise ValueError("seeds must be distinct")
     plan = dict(default_plan() if plan is None else plan)
 
+    # Materialize once: the same battery grades every seed (a caller-passed
+    # iterator would otherwise be exhausted on the first), and it is the
+    # design-time source for pooled_classes[].designed_rules below.
+    battery = default_rules() if rules is None else list(rules)
+
     runs = []
     for seed in seeds:
         cfg = replace(base_config, seed=seed)
         ledger, manifest = generate_with_anomalies(cfg, plan)
-        runs.append((seed, grade_run(ledger, manifest, rules=rules)))
+        runs.append((seed, grade_run(ledger, manifest, rules=battery)))
 
     all_classes = sorted({c.anomaly_class for _, r in runs for c in r.class_grades})
     pooled_classes = []
@@ -357,6 +367,9 @@ def build_report_card(
                 per_seed=per_seed,
                 recall_min=min(points),
                 recall_max=max(points),
+                designed_rules=tuple(
+                    sorted(r.rule_id for r in battery if cls in r.targets)
+                ),
             )
         )
 

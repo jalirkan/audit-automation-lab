@@ -77,6 +77,9 @@
         "reason": "entire interval at or above threshold",
         "threshold": 0.9
       },
+      "designed_rules": [
+        "R-007"
+      ],
       "n_detected": 40,
       "n_planted": 40,
       "per_seed": {
@@ -127,6 +130,9 @@
         "reason": "entire interval at or above threshold",
         "threshold": 0.9
       },
+      "designed_rules": [
+        "R-010"
+      ],
       "n_detected": 40,
       "n_planted": 40,
       "per_seed": {
@@ -177,6 +183,10 @@
         "reason": "entire interval at or above threshold",
         "threshold": 0.9
       },
+      "designed_rules": [
+        "R-002",
+        "R-004"
+      ],
       "n_detected": 40,
       "n_planted": 40,
       "per_seed": {
@@ -227,6 +237,9 @@
         "reason": "entire interval at or above threshold",
         "threshold": 0.9
       },
+      "designed_rules": [
+        "R-006"
+      ],
       "n_detected": 40,
       "n_planted": 40,
       "per_seed": {
@@ -277,6 +290,9 @@
         "reason": "interval straddles the threshold",
         "threshold": 0.9
       },
+      "designed_rules": [
+        "R-011"
+      ],
       "n_detected": 39,
       "n_planted": 40,
       "per_seed": {
@@ -327,6 +343,9 @@
         "reason": "entire interval at or above threshold",
         "threshold": 0.9
       },
+      "designed_rules": [
+        "R-002"
+      ],
       "n_detected": 40,
       "n_planted": 40,
       "per_seed": {
@@ -377,6 +396,9 @@
         "reason": "entire interval at or above threshold",
         "threshold": 0.9
       },
+      "designed_rules": [
+        "R-009"
+      ],
       "n_detected": 40,
       "n_planted": 40,
       "per_seed": {
@@ -427,6 +449,9 @@
         "reason": "entire interval at or above threshold",
         "threshold": 0.9
       },
+      "designed_rules": [
+        "R-005"
+      ],
       "n_detected": 40,
       "n_planted": 40,
       "per_seed": {
@@ -477,6 +502,9 @@
         "reason": "entire interval at or above threshold",
         "threshold": 0.9
       },
+      "designed_rules": [
+        "R-001"
+      ],
       "n_detected": 40,
       "n_planted": 40,
       "per_seed": {
@@ -527,6 +555,9 @@
         "reason": "interval straddles the threshold",
         "threshold": 0.9
       },
+      "designed_rules": [
+        "R-008"
+      ],
       "n_detected": 15,
       "n_planted": 15,
       "per_seed": {
@@ -577,6 +608,9 @@
         "reason": "entire interval at or above threshold",
         "threshold": 0.9
       },
+      "designed_rules": [
+        "R-003"
+      ],
       "n_detected": 40,
       "n_planted": 40,
       "per_seed": {
