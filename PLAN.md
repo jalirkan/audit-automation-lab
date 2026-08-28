@@ -83,6 +83,14 @@ where you adopt one of its decisions, cite it in this repo's DECISIONS.md
 
 ## Stretch
 - Continuous mode: monthly batches, profile drift vs baseline, exception aging.
+  **Done** — `continuous/` (batching, drift, aging), `ledger/drift.py`
+  (planted drift, the ground truth), `rules/drift.py` (R-012, its own
+  battery), graded by the existing report card via its `generate` hook. See
+  DECISIONS D-027 to D-031. Deliberately left for a later pass: drift in
+  amount *distribution* rather than composition (the profile carries
+  deciles; comparing them needs a distributional statistic and its own
+  calibration), a rolling rather than fixed baseline, and drift planted
+  *inside* the baseline window — the case this screen provably cannot see.
 - AP/AR subledger scenarios (duplicate invoices, ghost vendors) on the same
   planted-truth discipline.
 - Optional LLM assist (adapter-gated like the toolkit): natural-language

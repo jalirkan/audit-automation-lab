@@ -219,7 +219,10 @@ def grade_run(ledger, manifest, rules=None) -> RunGrade:
 
     return RunGrade(
         seed=ledger.meta.get("seed"),
-        anomaly_seed=ledger.meta.get("anomalies", {}).get("anomaly_seed"),
+        # From the manifest, not the ledger metadata: the manifest is the
+        # ground truth (D-002) and every planting path records its stream
+        # seed there, whatever shape its ledger meta takes.
+        anomaly_seed=manifest.anomaly_seed,
         n_entries=n_entries,
         n_planted_instances=len(manifest.anomalies),
         n_planted_entries=len(planted_ids),
@@ -313,18 +316,30 @@ def build_report_card(
     seeds=(101, 102, 103, 104, 105),
     targets: Targets = Targets(),
     rules=None,
+    generate=generate_with_anomalies,
 ) -> ReportCard:
-    """Run the battery across several seeded ledgers and pool the grades.
+    """Run a battery across several seeded ledgers and pool the grades.
 
     Pooling across seeds is what gives recall a sample size worth deciding
     on: with the default plan, one seed plants too few instances per class
     for any interval to clear a 0.9 floor, and the card would say
     inconclusive — correctly.
+
+    `generate` is the planting function, `(config, plan) -> (ledger,
+    manifest)`. Continuous mode passes `ledger.drift.generate_with_drift`
+    with a drift plan and the continuous battery: grading a new detection
+    capability means running *this* card over *its* planted truth, not
+    writing a second scorer with its own definitions (DECISIONS D-029).
     """
     if not seeds:
         raise ValueError("at least one seed required")
     if len(set(seeds)) != len(seeds):
         raise ValueError("seeds must be distinct")
+    if plan is None and generate is not generate_with_anomalies:
+        raise ValueError(
+            "a plan is required when grading with an alternate generator: "
+            "the point-in-time default plan names classes it cannot plant"
+        )
     plan = dict(default_plan() if plan is None else plan)
 
     # Materialize once: the same battery grades every seed (a caller-passed
@@ -335,7 +350,7 @@ def build_report_card(
     runs = []
     for seed in seeds:
         cfg = replace(base_config, seed=seed)
-        ledger, manifest = generate_with_anomalies(cfg, plan)
+        ledger, manifest = generate(cfg, plan)
         runs.append((seed, grade_run(ledger, manifest, rules=battery)))
 
     all_classes = sorted({c.anomaly_class for _, r in runs for c in r.class_grades})

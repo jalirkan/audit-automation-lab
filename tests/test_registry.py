@@ -1,9 +1,10 @@
 import unittest
 
 from ledger.anomalies import ANOMALY_CLASSES, default_plan, generate_with_anomalies
+from ledger.drift import DRIFT_CLASSES
 from ledger.generate import GeneratorConfig
 from rules.base import REFERENCES
-from rules.registry import build_rules, default_rules, evaluate_all
+from rules.registry import build_rules, continuous_rules, default_rules, evaluate_all
 
 
 class RegistryTests(unittest.TestCase):
@@ -38,6 +39,44 @@ class RegistryTests(unittest.TestCase):
     def test_subset_build(self):
         rules = build_rules(["R-004", "R-001"])
         self.assertEqual([r.rule_id for r in rules], ["R-001", "R-004"])
+
+
+class ContinuousBatteryTests(unittest.TestCase):
+    """Two batteries, kept apart on purpose (DECISIONS D-030). The
+    point-in-time battery must not acquire a rule that needs a year of
+    monthly batches to run, and its report card must not acquire a class no
+    point-in-time rule targets."""
+
+    def test_continuous_rules_are_not_in_the_default_battery(self):
+        default_ids = {r.rule_id for r in default_rules()}
+        continuous_ids = {r.rule_id for r in continuous_rules()}
+        self.assertEqual(continuous_ids, {"R-012"})
+        self.assertEqual(default_ids & continuous_ids, set())
+
+    def test_no_point_in_time_rule_targets_a_drift_class(self):
+        for rule in default_rules():
+            self.assertEqual(set(rule.targets) & set(DRIFT_CLASSES), set(), rule.rule_id)
+
+    def test_every_drift_class_has_a_designed_continuous_rule(self):
+        covered = set()
+        for r in continuous_rules():
+            covered |= set(r.targets)
+        self.assertEqual(covered, set(DRIFT_CLASSES))
+
+    def test_metadata_complete(self):
+        for r in continuous_rules():
+            d = r.describe()
+            self.assertTrue(d["title"], r.rule_id)
+            self.assertTrue(d["population"], r.rule_id)
+            self.assertTrue(d["criterion"], r.rule_id)
+            self.assertTrue(d["limitations"], r.rule_id)
+            self.assertTrue(d["params"], r.rule_id)
+            for ref in d["references"]:
+                self.assertIn(ref, REFERENCES, r.rule_id)
+
+    def test_continuous_rules_are_reachable_by_id(self):
+        (rule,) = build_rules(["R-012"])
+        self.assertEqual(rule.rule_id, "R-012")
 
 
 class BatterySmokeTests(unittest.TestCase):

@@ -2,7 +2,7 @@ import io
 import json
 import tempfile
 import unittest
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 
 from cli import main
@@ -90,6 +90,80 @@ class ReportCardCliTests(unittest.TestCase):
             card = json.loads((out / "report-card.json").read_text(encoding="utf-8"))
             self.assertEqual(card["seeds"], [301, 302])
             md = (out / "report-card.md").read_text(encoding="utf-8")
+            self.assertEqual(find_bare_rates(md), [])
+            self.assertIn("wilson", md)
+
+
+class ContinuousCliTests(unittest.TestCase):
+    def test_generate_drift_then_continuous_pack(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "run"
+            run_cli(
+                "generate", "--seed", "511", "--entries", "2400",
+                "--plan", "none", "--drift-plan", "default", "--out", str(out),
+            )
+            manifest = json.loads((out / "manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["n_anomalies"], 4)
+
+            stdout = run_cli("continuous", "--ledger", str(out), "--out", str(out))
+            self.assertIn("12 monthly batches", stdout)
+            self.assertIn("drift: baseline", stdout)
+            self.assertIn("aging as of", stdout)
+
+            drift = json.loads((out / "drift.json").read_text(encoding="utf-8"))
+            self.assertTrue(drift["applicable"])
+            self.assertEqual(len(drift["baseline_periods"]), 3)
+            self.assertEqual(drift["n_findings"], 4)
+            aging = json.loads((out / "aging.json").read_text(encoding="utf-8"))
+            self.assertGreater(aging["n_exceptions"], 0)
+            batches = json.loads((out / "batches.json").read_text(encoding="utf-8"))
+            self.assertEqual(len(batches["batches"]), 12)
+
+            wp = out / "workpapers"
+            names = sorted(p.name for p in wp.glob("*"))
+            self.assertEqual(
+                names, ["wp-aging.html", "wp-aging.md", "wp-drift.html", "wp-drift.md"]
+            )
+            for p in wp.glob("*"):
+                text = p.read_text(encoding="utf-8")
+                self.assertEqual(find_prohibited(text), [], p.name)
+                self.assertEqual(find_bare_rates(text), [], p.name)
+
+    def test_two_planting_modes_at_once_are_refused(self):
+        """The injectors each rebuild the same raw population; composing
+        them would leave each manifest describing a population the other
+        had already moved."""
+        with tempfile.TemporaryDirectory() as tmp:
+            with redirect_stderr(io.StringIO()) as err:
+                with self.assertRaises(AssertionError):
+                    run_cli(
+                        "generate", "--seed", "5", "--entries", "600",
+                        "--plan", "default", "--drift-plan", "default",
+                        "--out", str(Path(tmp) / "clash"),
+                    )
+            self.assertIn("--plan none", err.getvalue())
+            self.assertFalse((Path(tmp) / "clash").exists())
+
+    def test_continuous_card_writes_and_narrates(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "card"
+            stdout = run_cli(
+                "continuous-card", "--entries", "2400", "--seeds", "501,502",
+                "--out", str(out),
+            )
+            self.assertIn("preparer_concentration_drift", stdout)
+            self.assertIn("precision:", stdout)
+            card = json.loads(
+                (out / "continuous-report-card.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(card["seeds"], [501, 502])
+            self.assertEqual(
+                [c["anomaly_class"] for c in card["pooled_classes"]],
+                ["manual_source_surge", "preparer_concentration_drift"],
+            )
+            for c in card["pooled_classes"]:
+                self.assertEqual(c["designed_rules"], ["R-012"])
+            md = (out / "continuous-report-card.md").read_text(encoding="utf-8")
             self.assertEqual(find_bare_rates(md), [])
             self.assertIn("wilson", md)
 
