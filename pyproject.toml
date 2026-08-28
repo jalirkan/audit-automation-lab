@@ -1,0 +1,12 @@
+[project]
+name = "audit-automation-lab"
+version = "0.1.0"
+description = "AI-era audit tooling: full-population journal-entry testing, classical audit analytics, and generated workpapers, graded against planted ground truth on synthetic ledgers"
+requires-python = ">=3.10"
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest"]
+
+[tool.uv]
+package = false
