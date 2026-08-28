@@ -1,0 +1,75 @@
+name: CI
+
+# Every verification of this repo so far has been someone running the
+# commands by hand on one machine. A repo whose thesis is that detection
+# performance must be measured rather than asserted should not rest on that:
+# the same commands run here, on every push and pull request, where anyone
+# can check the result.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    # PLAN Conventions: `python -m unittest discover -s tests -t .` green
+    # before every commit. Unchanged here — CI runs the documented command,
+    # it does not invent its own.
+    name: tests (python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # pyproject/uv.lock declare requires-python = ">=3.10", so the
+        # declared floor is tested too, not just whatever is on a laptop.
+        # This is also where D-007's "stable across platforms and versions"
+        # claim about the string-seeded RNG streams gets checked instead of
+        # taken on trust.
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      # No install step, deliberately. Stdlib only and fully offline (PLAN
+      # Conventions, README Principles): nothing is fetched, so a run that
+      # ever needs pip is a design change to argue in DECISIONS, not a line
+      # to quietly add here. pytest is a dev convenience in the lockfile and
+      # is not the documented gate.
+      - name: Test suite
+        run: python -m unittest discover -s tests -t .
+
+  example:
+    # D-026: committed artifacts and the code that regenerates them must not
+    # be able to diverge silently. The suite asserts byte-identity of the
+    # manifest (the ground truth); this rebuilds the whole committed pack —
+    # flags, 14 workpapers, report card, README figures — and diffs it.
+    #
+    # One interpreter on purpose. D-026 records that byte identity is tested
+    # per-platform and additionally assumes libm rounds transcendentals
+    # identically for the lognormal draws; a failure here should mean the
+    # generator changed under the example, not that a second interpreter
+    # rounded differently. 3.12 is the version the pack was last confirmed
+    # to reproduce on.
+    name: committed example regenerates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Regenerate examples/run-001
+        run: python cli.py example --out "$RUNNER_TEMP/example-regen"
+      # ledger.json and ledger.csv are gitignored (D-026) — pure functions of
+      # the seed, too large to commit — so a checkout has nothing to compare
+      # them against. Everything else must match byte for byte.
+      - name: Diff against the committed pack
+        run: |
+          diff -r \
+            --exclude=ledger.json --exclude=ledger.csv \
+            examples/run-001 "$RUNNER_TEMP/example-regen"

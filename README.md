@@ -58,6 +58,11 @@ python -m unittest discover -s tests -t .   # 259 tests, ~5 seconds
 python cli.py example                        # regenerate examples/run-001 end to end
 ```
 
+Both run in CI on every push and pull request (`.github/workflows/ci.yml`):
+the suite across Python 3.10-3.13, and the committed pack regenerated and
+diffed against what is in the tree. No dependencies are installed there,
+which is the offline/stdlib-only claim being tested rather than repeated.
+
 The committed example (`examples/run-001/`) is a 100,051-entry FY2025 ledger
 with 43 planted anomalies: manifest, flags, 14 workpapers, and the report
 card, all regenerated deterministically from seeds (the large raw ledger
