@@ -4,14 +4,18 @@ The battery is data-driven and explicit (suite files arrive with the CLI,
 per toolkit D-019's suites-as-data discipline); a typo'd rule id fails
 immediately with the list of valid ids.
 
-Two batteries, not one. `default_rules()` is the point-in-time
+Three batteries, not one. `default_rules()` is the point-in-time
 journal-entry battery: eleven rules that examine one extract. The
 continuous battery is separate because its rules need several monthly
-batches and a baseline period to mean anything, and because a report card
+batches and a baseline period to mean anything. The accounts-payable
+battery is separate because it reads a subledger's document fields, which a
+general-ledger extract does not have at all. In every case a report card
 must grade a battery against the classes that battery was designed for
-(DECISIONS D-030). Both are reachable by id through `build_rules`.
+(DECISIONS D-030, D-033). All of them are reachable by id through
+`build_rules`.
 """
 
+from rules.ap import DuplicateInvoiceAmountDateRule, DuplicateInvoiceReferenceRule
 from rules.drift import ProfileDriftRule
 from rules.library import (
     BelowThresholdRule,
@@ -43,6 +47,11 @@ _RULE_CLASSES = (
 
 _CONTINUOUS_RULE_CLASSES = (ProfileDriftRule,)
 
+_AP_RULE_CLASSES = (
+    DuplicateInvoiceReferenceRule,
+    DuplicateInvoiceAmountDateRule,
+)
+
 
 def default_rules() -> list:
     """The point-in-time battery with default parameters, ordered by id."""
@@ -64,11 +73,26 @@ def continuous_rules() -> list:
     return sorted(rules, key=lambda r: r.rule_id)
 
 
+def ap_rules() -> list:
+    """The accounts-payable battery: duplicate-invoice screens over a
+    subledger extract.
+
+    Kept apart from `default_rules()` for the reason recorded in D-030 and
+    applied again in D-033: these rules key on document fields (vendor,
+    reference, invoice date) that a general ledger does not carry, so they
+    refuse to run on one — and grading them alongside the GL battery would
+    credit AP recall to screens that read none of those fields.
+    """
+    rules = [cls() for cls in _AP_RULE_CLASSES]
+    return sorted(rules, key=lambda r: r.rule_id)
+
+
 def rule_class_by_id() -> dict:
-    """Every rule in either battery, by id — so a subset can be built by id
+    """Every rule in any battery, by id — so a subset can be built by id
     without knowing which battery a rule belongs to."""
     return {
-        cls.rule_id: cls for cls in _RULE_CLASSES + _CONTINUOUS_RULE_CLASSES
+        cls.rule_id: cls
+        for cls in _RULE_CLASSES + _CONTINUOUS_RULE_CLASSES + _AP_RULE_CLASSES
     }
 
 

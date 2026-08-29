@@ -168,6 +168,86 @@ class ContinuousCliTests(unittest.TestCase):
             self.assertIn("wilson", md)
 
 
+class APCliTests(unittest.TestCase):
+    def test_generate_test_and_report_over_the_subledger(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "ap"
+            run_cli(
+                "ap-generate", "--seed", "601", "--entries", "600",
+                "--plan", "default", "--out", str(out),
+            )
+            manifest = json.loads((out / "manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["n_anomalies"], 8)
+            self.assertEqual(manifest["n_planted_entries"], 16)
+
+            run_cli("test", "--ledger", str(out), "--battery", "ap")
+            flags = json.loads((out / "flags.json").read_text(encoding="utf-8"))
+            self.assertEqual(sorted(flags["results"]), ["AP-001", "AP-002"])
+            self.assertGreater(
+                sum(r["n_flags"] for r in flags["results"].values()), 0
+            )
+
+            run_cli("report", "--ledger", str(out), "--battery", "ap",
+                    "--out", str(out))
+            wp = out / "workpapers"
+            names = sorted(p.name for p in wp.glob("*.md"))
+            self.assertIn("wp-ap-001.md", names)
+            self.assertIn("wp-ap-002.md", names)
+            for p in wp.glob("*"):
+                text = p.read_text(encoding="utf-8")
+                self.assertEqual(find_prohibited(text), [], p.name)
+                self.assertEqual(find_bare_rates(text), [], p.name)
+
+    def test_the_general_ledger_battery_is_still_the_default(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "gl"
+            run_cli("generate", "--seed", "7", "--entries", "400",
+                    "--plan", "none", "--out", str(out))
+            run_cli("test", "--ledger", str(out))
+            flags = json.loads((out / "flags.json").read_text(encoding="utf-8"))
+            self.assertEqual(len(flags["results"]), 11)
+
+    def test_ap_generate_is_deterministic_across_invocations(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            a, b = Path(tmp) / "a", Path(tmp) / "b"
+            for out in (a, b):
+                run_cli("ap-generate", "--seed", "605", "--entries", "400",
+                        "--out", str(out))
+            for name in ("ledger.json", "ledger.csv", "manifest.json"):
+                self.assertEqual(
+                    (a / name).read_bytes(), (b / name).read_bytes(), name
+                )
+
+    def test_ap_card_writes_and_narrates(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "card"
+            stdout = run_cli(
+                "ap-card", "--entries", "900", "--seeds", "601,602",
+                "--out", str(out),
+            )
+            self.assertIn("ap_exact_rekey", stdout)
+            self.assertIn("precision:", stdout)
+            card = json.loads(
+                (out / "ap-report-card.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(card["seeds"], [601, 602])
+            designed = {c["anomaly_class"]: c["designed_rules"]
+                        for c in card["pooled_classes"]}
+            self.assertEqual(designed["ap_no_reference_match"], ["AP-002"])
+            self.assertEqual(designed["ap_exact_rekey"], ["AP-001"])
+            md = (out / "ap-report-card.md").read_text(encoding="utf-8")
+            self.assertEqual(find_bare_rates(md), [])
+            self.assertIn("wilson", md)
+
+    def test_ap_card_refuses_an_empty_plan(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with redirect_stderr(io.StringIO()) as err:
+                with self.assertRaises(AssertionError):
+                    run_cli("ap-card", "--plan", "none",
+                            "--out", str(Path(tmp) / "none"))
+            self.assertIn("non-empty plan", err.getvalue())
+
+
 class SampleSizeCliTests(unittest.TestCase):
     def test_planning(self):
         stdout = run_cli("sample-size", "--tolerable", "0.05", "--risk", "0.05")

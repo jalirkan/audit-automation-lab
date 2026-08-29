@@ -6,12 +6,14 @@ keys, no clock reads in any artifact.
 
 Commands:
   generate         synthetic ledger (optionally with planted anomalies or drift)
-  test             run the rule battery over a generated ledger
+  test             run a rule battery over a generated ledger
   report           full workpaper pack (Markdown + standalone HTML)
   reportcard       grade the battery against planted truth across seeds
   sample-size      attribute-sampling math (planning and/or evaluation)
   continuous       monthly batches, profile drift, exception aging
   continuous-card  grade the drift screen against planted drift across seeds
+  ap-generate      AP subledger with planted duplicate invoices
+  ap-card          grade the AP duplicate screens against planted duplicates
   example          committed end-to-end run (see examples/run-001)
 """
 
@@ -28,6 +30,12 @@ from continuous.aging import age_exceptions, flatten_flags
 from continuous.drift import DriftParams
 from continuous.periods import monthly_batches
 from ledger.anomalies import ANOMALY_CLASSES, Manifest, default_plan, generate_with_anomalies
+from ledger.ap import (
+    AP_DUPLICATE_CLASSES,
+    default_ap_plan,
+    generate_ap_subledger,
+    generate_ap_with_duplicates,
+)
 from ledger.drift import DRIFT_CLASSES, default_drift_plan, generate_with_drift
 from ledger.generate import GeneratorConfig, generate
 from ledger.model import Ledger
@@ -40,7 +48,7 @@ from report.workpapers import (
 )
 from reportcard.grade import Targets, build_report_card
 from rules.drift import ProfileDriftRule
-from rules.registry import continuous_rules, default_rules, evaluate_all
+from rules.registry import ap_rules, continuous_rules, default_rules, evaluate_all
 from sampling.attribute import attribute_sample_size, evaluate_attribute_sample
 
 EXAMPLE_SEED = 20260401
@@ -84,6 +92,31 @@ def _parse_plan(text: str) -> dict:
     if not isinstance(plan, dict):
         raise ValueError("plan must be a JSON object of class -> count")
     return plan
+
+
+def _parse_ap_plan(text: str) -> dict:
+    if text == "default":
+        return default_ap_plan()
+    if text == "none":
+        return {}
+    plan = json.loads(text)
+    if not isinstance(plan, dict):
+        raise ValueError("AP plan must be a JSON object of class -> count")
+    return plan
+
+
+BATTERIES = {
+    "default": default_rules,
+    "ap": ap_rules,
+    "continuous": continuous_rules,
+}
+
+
+def _battery(name: str) -> list:
+    """Batteries are named, never mixed: a report card must grade a battery
+    against the classes that battery was designed for (DECISIONS D-030,
+    D-033)."""
+    return BATTERIES[name]()
 
 
 def _parse_drift_plan(text: str) -> dict:
@@ -156,7 +189,7 @@ def cmd_generate(args) -> int:
 
 def cmd_test(args) -> int:
     ledger = _load_ledger(Path(args.ledger))
-    results = evaluate_all(ledger)
+    results = evaluate_all(ledger, rules=_battery(args.battery))
     out = Path(args.out) if args.out else Path(args.ledger)
     _write_json(out / "flags.json", _battery_json(ledger, results))
     total = sum(len(r["flags"]) for r in results.values())
@@ -170,7 +203,7 @@ def cmd_test(args) -> int:
 def cmd_report(args) -> int:
     ledger = _load_ledger(Path(args.ledger))
     out = Path(args.out)
-    results = evaluate_all(ledger)
+    results = evaluate_all(ledger, rules=_battery(args.battery))
     benford = benford_for_ledger(ledger)
     profile = PopulationProfile.build(ledger)
     _write_json(out / "flags.json", _battery_json(ledger, results))
@@ -291,6 +324,67 @@ def cmd_continuous_card(args) -> int:
           f"{card.precision_decision.outcome}")
     print(f"fp rate:   {card.pooled_fp_rate.render()} -> {card.fp_decision.outcome}")
     print(f"wrote continuous report card to {out}")
+    return 0
+
+
+def cmd_ap_generate(args) -> int:
+    """An accounts-payable subledger with planted duplicate invoices. It is
+    a ledger like any other — the same model, the same rules interface, the
+    same report card — carrying the document fields an AP extract has
+    (DECISIONS D-033)."""
+    cfg = GeneratorConfig(
+        seed=args.seed,
+        n_entries=args.entries,
+        start=date.fromisoformat(args.start),
+        end=date.fromisoformat(args.end),
+    )
+    out = Path(args.out)
+    plan = _parse_ap_plan(args.plan)
+    if plan:
+        ledger, manifest = generate_ap_with_duplicates(
+            cfg, plan, anomaly_seed=args.anomaly_seed
+        )
+        _write_json(out / "manifest.json", manifest.to_dict())
+    else:
+        # The clean subledger keeps its own canonical ordering, exactly as
+        # `generate` does for a general ledger with no plan.
+        ledger, manifest = generate_ap_subledger(cfg), None
+    _write_json_compact(out / "ledger.json", ledger.to_dict())
+    _write_text(out / "ledger.csv", ledger.entries_csv())
+    planted = f", {len(manifest.anomalies)} duplicate pairs planted" if plan else ""
+    print(f"wrote {len(ledger)} AP documents to {out}{planted}")
+    return 0
+
+
+def cmd_ap_card(args) -> int:
+    """Grade the AP duplicate screens against planted duplicates — the same
+    report card, a different battery and a different planted truth."""
+    cfg = GeneratorConfig(seed=0, n_entries=args.entries)
+    seeds = tuple(int(s) for s in args.seeds.split(","))
+    plan = _parse_ap_plan(args.plan)
+    if not plan:
+        print("a non-empty plan is required to grade the AP screens",
+              file=sys.stderr)
+        return 2
+    card = build_report_card(
+        cfg,
+        plan=plan,
+        seeds=seeds,
+        targets=Targets(),
+        rules=ap_rules(),
+        generate=generate_ap_with_duplicates,
+    )
+    out = Path(args.out)
+    _write_json(out / "ap-report-card.json", card.to_dict())
+    doc = build_report_card_document(card)
+    _write_text(out / "ap-report-card.md", render_markdown(doc))
+    _write_text(out / "ap-report-card.html", render_html(doc))
+    for c in card.pooled_classes:
+        print(f"  {c.anomaly_class}: {c.recall.render()} -> {c.decision.outcome}")
+    print(f"precision: {card.pooled_precision.render()} -> "
+          f"{card.precision_decision.outcome}")
+    print(f"fp rate:   {card.pooled_fp_rate.render()} -> {card.fp_decision.outcome}")
+    print(f"wrote AP report card to {out}")
     return 0
 
 
@@ -484,14 +578,19 @@ def build_parser() -> argparse.ArgumentParser:
     g.add_argument("--out", required=True)
     g.set_defaults(func=cmd_generate)
 
-    t = sub.add_parser("test", help="run the rule battery over a ledger")
+    t = sub.add_parser("test", help="run a rule battery over a ledger")
     t.add_argument("--ledger", required=True,
                    help="ledger.json or a directory containing it")
+    t.add_argument("--battery", default="default", choices=sorted(BATTERIES),
+                   help="which battery to run (default: the point-in-time "
+                        "journal-entry rules; 'ap' tests a payables "
+                        "subledger)")
     t.add_argument("--out", default=None)
     t.set_defaults(func=cmd_test)
 
     r = sub.add_parser("report", help="write the full workpaper pack")
     r.add_argument("--ledger", required=True)
+    r.add_argument("--battery", default="default", choices=sorted(BATTERIES))
     r.add_argument("--out", required=True)
     r.set_defaults(func=cmd_report)
 
@@ -528,6 +627,33 @@ def build_parser() -> argparse.ArgumentParser:
                     help="'default' or JSON {drift class: count}")
     cc.add_argument("--out", required=True)
     cc.set_defaults(func=cmd_continuous_card)
+
+    ag = sub.add_parser(
+        "ap-generate",
+        help="AP subledger with planted duplicate invoices",
+    )
+    ag.add_argument("--seed", type=int, default=601)
+    ag.add_argument("--entries", type=int, default=900)
+    ag.add_argument("--start", default="2025-01-01")
+    ag.add_argument("--end", default="2025-12-31")
+    ag.add_argument("--plan", default="default",
+                    help=f"'default', 'none', or JSON {{class: count}} over "
+                         f"{', '.join(AP_DUPLICATE_CLASSES)}")
+    ag.add_argument("--anomaly-seed", type=int, default=None)
+    ag.add_argument("--out", required=True)
+    ag.set_defaults(func=cmd_ap_generate)
+
+    ac = sub.add_parser(
+        "ap-card",
+        help="grade the AP duplicate screens against planted duplicates",
+    )
+    ac.add_argument("--entries", type=int, default=900)
+    ac.add_argument("--seeds",
+                    default=",".join(str(s) for s in range(601, 621)))
+    ac.add_argument("--plan", default="default",
+                    help="'default' or JSON {AP duplicate class: count}")
+    ac.add_argument("--out", required=True)
+    ac.set_defaults(func=cmd_ap_card)
 
     s = sub.add_parser("sample-size", help="attribute sampling math")
     s.add_argument("--tolerable", type=float, required=True)

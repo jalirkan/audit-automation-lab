@@ -396,6 +396,9 @@ def finalize_entries(raw_entries) -> tuple:
     `seq` must already be present on each dict; callers control it (the
     injector uses a shuffled rank so planted entries carry no positional
     artifact — DECISIONS D-009).
+
+    `document` is optional: general-ledger entries record none, subledger
+    entries carry a SourceDocument.
     """
     ordered = sorted(raw_entries, key=lambda r: (r["posting_date"], r["seq"]))
     entries = []
@@ -410,6 +413,7 @@ def finalize_entries(raw_entries) -> tuple:
                 preparer_id=r["preparer_id"],
                 approver_id=r["approver_id"],
                 lines=r["lines"],
+                document=r.get("document"),
             )
         )
     return tuple(entries)

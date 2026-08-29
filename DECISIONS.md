@@ -362,3 +362,156 @@ interpreter so a red build means the generator changed and not that a
 second libm rounded a lognormal draw differently. And there is no install
 step: stdlib-only and offline are checkable properties, so the workflow is
 built to fail if either stops being true rather than to describe them.
+
+## D-033 · 2026-08-28 · A subledger is a Ledger with document fields; its battery is its own
+The accounts-payable subledger is not a new type. `ledger/ap.py` builds a
+`Ledger` — same chart, same users, same entries — so every existing rule,
+the profiler, both renderers and the report card operate on it with no
+special case, exactly as a monthly batch is just a smaller ledger (D-027).
+A parallel stack for payables would have had to re-earn every guarantee
+this one already has.
+
+What a subledger genuinely adds is structure the general ledger does not
+carry: `SourceDocument` (document type, vendor, the vendor's own reference,
+the document date) on `JournalEntry`. The distinction is the point of the
+scenario. A GL entry's counterparty and invoice number live in free text,
+which is why the GL's near-duplicate screen is lexical and says so (D-013);
+an AP extract has them as fields, and a detector built to scrape a vendor
+name out of prose would be measuring the parser, not the control. The field
+is optional and, when absent, is *absent from the serialization* rather than
+emitted as null, so every general ledger written before subledgers existed
+still has the canonical bytes it had (D-007). The CSV's four new columns are
+appended for the same reason: no existing column moves.
+
+So there are three batteries now, not two. `ap_rules()` refuses a general
+ledger outright — no entry carries document fields, and a rule that cannot
+read its population says why instead of examining nothing and passing
+(D-011) — and no point-in-time rule targets an AP duplicate class. Graded on
+the AP subledger anyway, the eleven GL rules catch 5 of 48 planted instances
+across three seeds, all of them through R-010, which requires an identical
+preparer *and* identical line structure: it sees neither the transposed
+references nor the cross-period re-keys, at any window. That is D-030's
+argument arriving a second time, and it is why the AP card grades the AP
+battery alone.
+
+## D-034 · 2026-08-28 · Four duplicate-invoice classes, because "duplicate" is four mechanisms
+"Duplicate invoice" is not one thing, and planting it as one class would
+have hidden the differences that matter. The four planted here are the same
+event — one payable recorded twice — reached by four routes:
+
+- `ap_exact_rekey`: same vendor, same reference, same invoice date, same
+  amount, keyed a few days later.
+- `ap_cross_period_rekey`: identical in kind, keyed 39 to 65 days later off
+  a vendor statement.
+- `ap_transposed_reference`: the re-key carries the classic keying error,
+  two adjacent digits of the reference swapped.
+- `ap_no_reference_match`: re-entered from a statement copy under a fresh
+  internal reference, with the invoice date shifted by up to three days.
+
+The test for a separate class was not taxonomy but **detectability**: a
+mechanism earns its own class when some plausible mis-tuning of the screens
+makes that mechanism, and only that mechanism, invisible. All four clear it,
+and the report card is where each failure shows up (measured at seeds
+601-602, four instances per class per seed):
+
+| Mutation (detector still registered, still targeting its classes) | Effect |
+|---|---|
+| AP-001 window bounded to 7 days, the GL duplicate rule's default | `ap_cross_period_rekey` 0/8, exception; `ap_exact_rekey` also loses one instance, because two to five business days can be more than seven calendar days |
+| AP-001 with transposition matching switched off, the rest of the battery intact | `ap_transposed_reference` 0/8, exception; the other three classes stay 8/8 |
+| AP-002 window reduced to 0 days (invoice dates must match exactly) | `ap_no_reference_match` 1/8, exception |
+| Battery removed entirely | all four classes 0, exception, precision "not tested" rather than 0 |
+
+Pooled into a single "duplicate invoice" class, every one of those
+regressions would have shown as a recall dip of a few points on a number
+still comfortably above any floor. That is the whole argument for the split.
+
+The second row taught something the design had not anticipated. The two
+screens partition the same space — same vendor, same amount — on one shared
+definition of a reference match, so with AP-001's transposition matching
+off, AP-002 *still* recognises the transposition, still defers the pair as
+AP-001's, and AP-001 no longer takes it: the pair falls through the crack
+between them and nothing flags it. A battery whose screens disagree about
+where their boundary sits leaves a gap exactly the width of the
+disagreement. The partition is now asserted directly — every planted pair is
+claimed by exactly one screen — as well as measured through the class.
+
+Ground truth per plant is the two documents that constitute it — the
+original and its duplicate — never the vendor's account or the amount group
+they sit in (D-019, D-029). Originals are drawn only from ordinary
+stochastic invoices whose (vendor, amount) is unique in the clean
+population, so each plant is the only pair its manifest note describes, and
+only from promptly-keyed ones, so the duplicate's own keying lag stays
+inside the range the clean population already covers — a lag band that only
+plants could occupy would let the calendar give away the answer (D-009's
+concern, in a different field). The duplicate's clerk is drawn over all
+preparers, because two clerks and one invoice is the mechanism AP dedup
+exists for, and it is also why the GL's preparer-keyed R-010 cannot stand
+in.
+
+Deliberately not planted, and so deliberately not claimed: a re-key whose
+*amount* was altered (both screens require equal amounts and say so), the
+same invoice paid twice through two payment documents rather than recorded
+twice, duplicates across vendor records that are really one vendor under two
+names, and the whole accounts-receivable side of the stretch item. Each is a
+different scenario needing its own plant and its own evidence, and an
+unplanted class would be an unmeasured claim.
+
+## D-035 · 2026-08-28 · The AP thresholds are measured; one screen's precision has a published ceiling
+Both AP screens' parameters come from measurement on clean populations, the
+way the drift floor did (D-028), not from taste.
+
+**AP-002's invoice-date window.** Over 40 clean seeds (36,000 documents, no
+plants anywhere) the screen's yield by window is flat and then falls off a
+cliff: 950 flagged documents at 0 days, 950 at 3, 952 at 7, 952 at 10, 952
+at 14, 954 at 21, 954 at 25 — then 1,112 at 28, 1,349 at 30 and 1,433 at 35
+and beyond. The cliff is the monthly retainer: identical amount, same
+vendor, invoice dates a month apart. The default of 10 days sits in the
+middle of the flat region, far enough above 3 to cover a statement copy
+whose invoice date shifted by a few days and 18 days clear of the first
+recurring intrusion. The flat 950 is not noise to be tuned out: it is the
+same-day split billing the clean population contains on purpose, and it is
+the ceiling described below.
+
+**AP-001's clean yield.** 136 flagged documents over the same 40 seeds, from
+exactly two sources. 80 are the progress billing that splits a contract into
+two equal instalments under one reference — a document-key duplicate on
+every criterion the rule can state, and a legitimate transaction. 56 are
+transposition matches on sequentially-numbered invoices that happen to carry
+equal amounts: swapping a reference's last two digits moves the number by a
+multiple of nine, which is inside an ordinary increment, so a vendor's own
+numbering can produce a pair the criterion cannot distinguish from a
+mis-key. Every one of those 56 is an *adjacent* swap, so narrowing the
+criterion to adjacency — the shape of the planted error — would remove none
+of them while shrinking the criterion onto the plant it is graded against.
+It was left wide. Single mis-keyed digits are refused for the opposite
+reason: sequential numbering makes a neighbouring reference the vendor's
+next invoice, and matching it would buy recall at a false-positive cost this
+population cannot bound.
+
+**The measured card** (`python cli.py ap-card`, 20 seeds x 900 documents, two
+instances of each class per seed): all four classes 40/40, recall 1.0000
+(95% Wilson 0.9124-1.0000, n=40) — a *pass* against the 0.9 floor, at the
+same pooled n the committed example run sizes itself for (D-020); the drift
+screen next door still renders inconclusive because six instances cannot
+demonstrate a floor, and this card was sized so it would not have to.
+Battery precision 0.3721
+(0.3404-0.4049, n=860) takes an exception against the 0.5 demo target, and
+the per-rule table says why rather than averaging it away: AP-001 0.7843
+(0.7349-0.8267, n=306), AP-002 0.1444 (0.1176-0.1761, n=554). False
+positives run 302.7 per 10,000 clean documents (278.5-328.9 per 10k,
+n=17,840), an exception against the demo ceiling.
+
+Two honest readings go with those numbers. First, **AP-002's precision is
+capped by the population, not by the tuning**: one delivery invoiced in two
+same-day parts, with equal amounts and unrelated references, is the same
+object as far as the criterion can see, and no threshold available to this
+screen separates them. That is a finding about what amount-and-date matching
+can do, reported rather than engineered around; the entries it names are
+leads, and a reviewer clears split billing in seconds. Second, **precision
+here is partly a statement about planted density**: at four instances per
+class per seed over 10 seeds the same battery measures 0.5387 (0.4985-0.5784,
+n=594) purely because the plants outnumber the fixed benign structure by
+more. The false-positive rate per 10,000 clean documents barely moves
+between the two runs (302.7 against 310.0), which is why it, and not
+precision, is the number to compare across populations (D-025's
+density-dependence lesson, restated for a subledger).

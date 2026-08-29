@@ -1,10 +1,17 @@
 import unittest
 
 from ledger.anomalies import ANOMALY_CLASSES, default_plan, generate_with_anomalies
+from ledger.ap import AP_DUPLICATE_CLASSES
 from ledger.drift import DRIFT_CLASSES
 from ledger.generate import GeneratorConfig
 from rules.base import REFERENCES
-from rules.registry import build_rules, continuous_rules, default_rules, evaluate_all
+from rules.registry import (
+    ap_rules,
+    build_rules,
+    continuous_rules,
+    default_rules,
+    evaluate_all,
+)
 
 
 class RegistryTests(unittest.TestCase):
@@ -77,6 +84,46 @@ class ContinuousBatteryTests(unittest.TestCase):
     def test_continuous_rules_are_reachable_by_id(self):
         (rule,) = build_rules(["R-012"])
         self.assertEqual(rule.rule_id, "R-012")
+
+
+class APBatteryTests(unittest.TestCase):
+    """The third battery, kept apart for the reason recorded in D-033: its
+    rules read subledger document fields a general ledger does not have, so
+    they refuse to run on one, and no GL rule targets an AP duplicate
+    class."""
+
+    def test_ap_rules_are_not_in_the_other_batteries(self):
+        ap_ids = {r.rule_id for r in ap_rules()}
+        self.assertEqual(ap_ids, {"AP-001", "AP-002"})
+        self.assertEqual(ap_ids & {r.rule_id for r in default_rules()}, set())
+        self.assertEqual(ap_ids & {r.rule_id for r in continuous_rules()}, set())
+
+    def test_no_other_rule_targets_an_ap_duplicate_class(self):
+        for rule in default_rules() + continuous_rules():
+            self.assertEqual(
+                set(rule.targets) & set(AP_DUPLICATE_CLASSES), set(), rule.rule_id
+            )
+
+    def test_every_ap_class_has_a_designed_rule(self):
+        covered = set()
+        for r in ap_rules():
+            covered |= set(r.targets)
+        self.assertEqual(covered, set(AP_DUPLICATE_CLASSES))
+
+    def test_metadata_complete(self):
+        for r in ap_rules():
+            d = r.describe()
+            self.assertTrue(d["title"], r.rule_id)
+            self.assertTrue(d["population"], r.rule_id)
+            self.assertTrue(d["criterion"], r.rule_id)
+            self.assertTrue(d["limitations"], r.rule_id)
+            self.assertTrue(d["params"], r.rule_id)
+            for ref in d["references"]:
+                self.assertIn(ref, REFERENCES, r.rule_id)
+
+    def test_ap_rules_are_reachable_by_id(self):
+        rules = build_rules(["AP-002", "AP-001"])
+        self.assertEqual([r.rule_id for r in rules], ["AP-001", "AP-002"])
 
 
 class BatterySmokeTests(unittest.TestCase):

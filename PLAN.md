@@ -92,7 +92,17 @@ where you adopt one of its decisions, cite it in this repo's DECISIONS.md
   calibration), a rolling rather than fixed baseline, and drift planted
   *inside* the baseline window — the case this screen provably cannot see.
 - AP/AR subledger scenarios (duplicate invoices, ghost vendors) on the same
-  planted-truth discipline.
+  planted-truth discipline. **AP duplicate invoices done** — `ledger/ap.py`
+  (the subledger generator, its documented benign structure, and four
+  planted duplicate classes), `rules/ap.py` (AP-001 on the document key,
+  AP-002 on amount and invoice date, in their own battery), graded by the
+  existing report card through its `generate` hook. See DECISIONS D-033 to
+  D-035. Deliberately left for a later pass: re-keys whose *amount* was
+  altered (both screens require equal amounts and say so), the same invoice
+  paid twice through two payment documents rather than recorded twice,
+  duplicates spanning two vendor records that are really one vendor, ghost
+  vendors, and the entire AR side — each needs its own plant and its own
+  evidence, and an unplanted class would be an unmeasured claim.
 - Optional LLM assist (adapter-gated like the toolkit): natural-language
   rationale summaries for flagged entries — never as the detector, only as
   the explainer, and clearly labeled.

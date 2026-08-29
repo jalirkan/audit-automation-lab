@@ -14,7 +14,8 @@ So every analytic here ships with a report card: synthetic ledgers with known
 planted anomalies, and the recall/precision the engine actually achieved
 against them, with confidence intervals.
 
-## What it does (v1 complete — phases 0-6 of PLAN.md, plus continuous mode)
+## What it does (v1 complete — phases 0-6 of PLAN.md, plus continuous mode
+and an AP subledger)
 
 - **Synthetic ledger generator** (`ledger/`) — deterministic, seeded general
   ledgers: seasonality, approval workflow, per-class amount distributions,
@@ -43,6 +44,16 @@ against them, with confidence intervals.
   card rendered alongside; Markdown + self-contained HTML. A renderer-level
   guard refuses conclusory language, and a scanner rejects any percentage
   that appears without its sample size.
+- **AP subledger** (`ledger/ap.py`, `rules/ap.py`) — the same discipline
+  applied to payables: a deterministic subledger of vendor invoices and
+  credit memos carrying the document fields a GL extract does not have
+  (vendor, the vendor's own reference, the invoice date), with duplicate
+  invoices planted as **four** classes rather than one — exact re-key,
+  cross-period re-key, transposed reference, and re-entry under an
+  unrelated reference. Two screens in their own battery: AP-001 on the
+  document key at any distance, AP-002 on amount and invoice-date
+  proximity where no key match exists. The split is what makes a mis-tuned
+  screen visible; see DECISIONS D-033 to D-035.
 - **Continuous mode** (`continuous/`) — the same discipline applied to
   monitoring: monthly batches (a batch is just a smaller ledger), a
   population-profile drift screen against a baseline period, and an
@@ -54,7 +65,7 @@ against them, with confidence intervals.
 ## Quick start
 
 ```
-python -m unittest discover -s tests -t .   # 259 tests, ~5 seconds
+python -m unittest discover -s tests -t .   # 361 tests, ~5 seconds
 python cli.py example                        # regenerate examples/run-001 end to end
 ```
 
@@ -76,7 +87,8 @@ population by design. The per-rule table shows exactly which screen buys
 its recall at what false-positive cost.
 
 Other commands: `generate`, `test`, `report`, `reportcard`, `sample-size`,
-`continuous`, `continuous-card` (see `python cli.py --help`).
+`continuous`, `continuous-card`, `ap-generate`, `ap-card` (see
+`python cli.py --help`).
 
 ## Continuous mode
 
@@ -106,6 +118,43 @@ the screen concludes about a period-and-category cell, so it names the whole
 cell as leads, long-standing members included. The aging schedule is
 likewise careful about what it is not — with no disposition data in the lab,
 it reports elapsed periods, never "open items".
+
+## AP subledger
+
+```
+python cli.py ap-generate --out runs/ap        # 900 documents, 8 planted duplicate pairs
+python cli.py test --ledger runs/ap --battery ap
+python cli.py report --ledger runs/ap --battery ap --out runs/ap
+python cli.py ap-card --out runs/ap            # grade the screens
+```
+
+"Duplicate invoice" is four mechanisms, not one, and they are planted and
+graded as four classes because each is the one that disappears under a
+different plausible mis-tuning: bound AP-001's window to seven days, the way
+the GL duplicate rule bounds its own, and cross-period re-keys go to zero
+while everything else stays caught; switch off transposition matching and
+the transposed class goes to zero; narrow AP-002's window to exact invoice
+dates and the unreferenced re-keys collapse. Pooled into one class, each of
+those would have read as a few points off a recall number still above the
+floor. DECISIONS D-034 has the table.
+
+Measured by `python cli.py ap-card` (20 seeds x 900 documents, two instances
+of each class per seed): all four classes 40/40 detected, recall 1.0000 (95%
+Wilson 0.9124-1.0000, n=40) — a *pass* against the 0.9 floor. Battery
+precision 0.3721 (0.3404-0.4049, n=860) takes an exception, and the per-rule
+table says why instead of averaging it: the document-key screen runs 0.7843
+(0.7349-0.8267, n=306), the amount-and-date screen 0.1444 (0.1176-0.1761,
+n=554). False positives run 302.7 per 10k clean documents (278.5-328.9 per
+10k, n=17,840).
+
+That second precision figure is a finding, not a defect to tune out: one
+delivery invoiced in two same-day parts, equal amounts, unrelated
+references, is the same object as far as an amount-and-date criterion can
+see. The clean subledger contains that split billing on purpose, along with
+a monthly retainer at one repeating amount, progress billings that repeat a
+reference, and credit memos that reverse an invoice — so the screens'
+thresholds are calibrated against measured clean behaviour (D-035's table)
+rather than taste, and their cost is printed rather than assumed away.
 
 ## Principles
 
