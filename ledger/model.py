@@ -19,6 +19,7 @@ from core.dates import period_str
 ACCOUNT_TYPES = ("asset", "liability", "equity", "revenue", "expense")
 NORMAL_SIDES = ("debit", "credit")
 USER_ROLES = ("preparer", "approver", "system")
+DOC_TYPES = ("invoice", "credit_memo")
 
 
 def cents_to_str(cents: int) -> str:
@@ -158,6 +159,51 @@ class JournalLine:
 
 
 @dataclass(frozen=True)
+class SourceDocument:
+    """The subledger document an entry records.
+
+    A general-ledger entry has no structured counterparty or document
+    number: those live in free text, which is exactly why the GL's
+    duplicate screens are lexical and say so (D-013). A subledger extract
+    has them as fields, and the AP rules key on the fields rather than
+    scraping prose (DECISIONS D-033). Optional on JournalEntry: GL entries
+    carry none, and their serialization is unchanged.
+    """
+
+    doc_type: str        # one of DOC_TYPES
+    party_id: str        # vendor (AP) or customer (AR) identifier
+    reference: str       # the counterparty's own document number
+    doc_date: date       # the document's date, not the date it was keyed
+
+    def __post_init__(self):
+        if self.doc_type not in DOC_TYPES:
+            raise ValueError(f"unknown document type: {self.doc_type!r}")
+        if not self.party_id:
+            raise ValueError("party_id must be non-empty")
+        if not self.reference:
+            raise ValueError("reference must be non-empty")
+        if not isinstance(self.doc_date, date):
+            raise TypeError("doc_date must be a date")
+
+    def to_dict(self) -> dict:
+        return {
+            "doc_type": self.doc_type,
+            "party_id": self.party_id,
+            "reference": self.reference,
+            "doc_date": self.doc_date.isoformat(),
+        }
+
+    @staticmethod
+    def from_dict(d: dict) -> "SourceDocument":
+        return SourceDocument(
+            doc_type=d["doc_type"],
+            party_id=d["party_id"],
+            reference=d["reference"],
+            doc_date=date.fromisoformat(d["doc_date"]),
+        )
+
+
+@dataclass(frozen=True)
 class JournalEntry:
     entry_id: str
     posting_date: date
@@ -167,12 +213,15 @@ class JournalEntry:
     preparer_id: str
     approver_id: str  # None when no approval is recorded
     lines: tuple
+    document: SourceDocument = None  # subledger entries only
 
     def __post_init__(self):
         if not self.lines:
             raise ValueError("entry must have at least one line")
         if not isinstance(self.lines, tuple):
             raise TypeError("lines must be a tuple")
+        if self.document is not None and not isinstance(self.document, SourceDocument):
+            raise TypeError("document must be a SourceDocument")
 
     @property
     def total_debits_cents(self) -> int:
@@ -209,7 +258,7 @@ class JournalEntry:
         return tuple(sorted({l.account_id for l in self.lines if l.credit_cents > 0}))
 
     def to_dict(self) -> dict:
-        return {
+        d = {
             "entry_id": self.entry_id,
             "posting_date": self.posting_date.isoformat(),
             "effective_date": self.effective_date.isoformat(),
@@ -219,9 +268,16 @@ class JournalEntry:
             "approver_id": self.approver_id,
             "lines": [l.to_dict() for l in self.lines],
         }
+        # Absent, not null: a GL entry records no subledger document, and
+        # emitting a null for one would change the canonical bytes of every
+        # ledger written before subledgers existed (D-007).
+        if self.document is not None:
+            d["document"] = self.document.to_dict()
+        return d
 
     @staticmethod
     def from_dict(d: dict) -> "JournalEntry":
+        doc = d.get("document")
         return JournalEntry(
             entry_id=d["entry_id"],
             posting_date=date.fromisoformat(d["posting_date"]),
@@ -231,6 +287,7 @@ class JournalEntry:
             preparer_id=d["preparer_id"],
             approver_id=d["approver_id"],
             lines=tuple(JournalLine.from_dict(x) for x in d["lines"]),
+            document=SourceDocument.from_dict(doc) if doc else None,
         )
 
 
@@ -306,9 +363,17 @@ class Ledger:
                 "account_name",
                 "debit",
                 "credit",
+                # Subledger document fields, appended so column positions in
+                # a general-ledger export are unchanged; empty for entries
+                # that record no document.
+                "doc_type",
+                "doc_party",
+                "doc_reference",
+                "doc_date",
             ]
         )
         for e in self.entries:
+            doc = e.document
             for i, line in enumerate(e.lines, start=1):
                 w.writerow(
                     [
@@ -325,6 +390,10 @@ class Ledger:
                         self.coa.get(line.account_id).name if line.account_id in self.coa else "",
                         cents_to_str(line.debit_cents) if line.debit_cents else "",
                         cents_to_str(line.credit_cents) if line.credit_cents else "",
+                        doc.doc_type if doc else "",
+                        doc.party_id if doc else "",
+                        doc.reference if doc else "",
+                        doc.doc_date.isoformat() if doc else "",
                     ]
                 )
         return buf.getvalue()

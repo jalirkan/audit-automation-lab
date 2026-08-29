@@ -8,6 +8,7 @@ from ledger.model import (
     JournalEntry,
     JournalLine,
     Ledger,
+    SourceDocument,
     User,
     cents_to_str,
 )
@@ -27,6 +28,66 @@ def _entry(entry_id="JE-000001", debit=10_00, credit=10_00, desc="A perfectly or
             JournalLine("1000", credit_cents=credit),
         ),
     )
+
+
+class SourceDocumentTests(unittest.TestCase):
+    """Subledger document fields are optional and absent-by-default: a
+    general-ledger entry records no document, and its serialization must be
+    the bytes it always was (D-007)."""
+
+    def _doc(self):
+        return SourceDocument("invoice", "V-01", "INV-9001", date(2025, 3, 10))
+
+    def test_gl_entries_serialize_without_a_document_key(self):
+        d = _entry().to_dict()
+        self.assertNotIn("document", d)
+        self.assertIsNone(JournalEntry.from_dict(d).document)
+
+    def test_subledger_entries_round_trip(self):
+        entry = JournalEntry(
+            entry_id="JE-000001",
+            posting_date=date(2025, 3, 12),
+            effective_date=date(2025, 3, 10),
+            description="vendor invoice",
+            source="AP",
+            preparer_id="P-01",
+            approver_id=None,
+            lines=(
+                JournalLine("6400", debit_cents=1000),
+                JournalLine("2000", credit_cents=1000),
+            ),
+            document=self._doc(),
+        )
+        again = JournalEntry.from_dict(entry.to_dict())
+        self.assertEqual(again.document, self._doc())
+        self.assertEqual(
+            canonical_bytes(entry.to_dict()), canonical_bytes(again.to_dict())
+        )
+
+    def test_document_validation(self):
+        with self.assertRaises(ValueError):
+            SourceDocument("payment", "V-01", "INV-1", date(2025, 1, 1))
+        with self.assertRaises(ValueError):
+            SourceDocument("invoice", "", "INV-1", date(2025, 1, 1))
+        with self.assertRaises(ValueError):
+            SourceDocument("invoice", "V-01", "", date(2025, 1, 1))
+        with self.assertRaises(TypeError):
+            SourceDocument("invoice", "V-01", "INV-1", "2025-01-01")
+
+    def test_a_document_of_the_wrong_type_is_refused(self):
+        with self.assertRaises(TypeError):
+            JournalEntry(
+                entry_id="JE-000001",
+                posting_date=date(2025, 3, 12),
+                effective_date=date(2025, 3, 10),
+                description="",
+                source="AP",
+                preparer_id="P-01",
+                approver_id=None,
+                lines=(JournalLine("6400", debit_cents=1),
+                       JournalLine("2000", credit_cents=1)),
+                document={"party_id": "V-01"},
+            )
 
 
 class LineTests(unittest.TestCase):
